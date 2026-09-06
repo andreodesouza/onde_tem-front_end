@@ -1,6 +1,6 @@
 # 📍 Onde Tem?
 
-**Aplicativo Web Progressivo para Agendamento de Serviços Estéticos com Geolocalização**
+**Aplicativo Multiplataforma para Agendamento de Serviços Estéticos com Geolocalização**
 
 Desenvolvido no curso de Engenharia de Software da **Universidade de Vassouras – Campus Saquarema**.
 
@@ -24,7 +24,8 @@ A plataforma substitui marcações informais por um sistema prático que conecta
 
 ## 🛠️ Tecnologias
 
-- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap (PWA)
+- **Frontend:** HTML5, CSS3 e JavaScript
+- **BanckEnd:** Django
 - **Recursos:** Geolocalização
 
 ---
@@ -39,3 +40,6 @@ A plataforma substitui marcações informais por um sistema prático que conecta
 
  
 **Instituição:** Universidade de Vassouras – Campus Saquarema
+
+## Repositório BackEnd
+https://github.com/andreodesouza/onde_tem-back_end
