@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onde Tem? — Cadastro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/cadastro.css" />
+</head>
+
+<body>
+    <main class="tela-login">
+        <div class="background" aria-hidden="true">
+            <img src="assets/img/background.png" alt="" />
+        </div>
+
+        <section class="square">
+            <div class="square-inner">
+                <header class="header">
+                    <div class="logo">
+                        <img src="assets/img/logo.png" alt="ONDE TEM" />
+                    </div>
+                    <h1>Crie a sua conta</h1>
+                    <div class="roles">
+                        <button type="button" class="role-btn active" id="btn-tipo-cliente">Cliente</button>
+                        <button type="button" class="role-btn" id="btn-tipo-empresa">Empresa</button>
+                    </div>
+                </header>
+
+                <!-- Formulário de Cadastro de Cliente -->
+                <form class="login-framer" id="form-cad-cliente">
+                    <div class="buttons-login">
+                        <div class="login-senha">
+                            <label class="field"><input type="text" id="cad-nome" placeholder="Nome completo"
+                                    required /></label>
+                            <label class="field"><input type="tel" id="cad-telefone" placeholder="Telemóvel / WhatsApp"
+                                    required /></label>
+                            <label class="field"><input type="email" id="cad-email-cliente" placeholder="E-mail"
+                                    required /></label>
+                            <label class="field"><input type="password" id="cad-senha-cliente"
+                                    placeholder="Palavra-passe" required /></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-start">Concluir Cadastro</button>
+                </form>
+
+                <!-- Formulário de Cadastro de Empresa (Oculto por padrão) -->
+                <form class="login-framer" id="form-cad-empresa" style="display: none;">
+                    <div class="buttons-login">
+                        <div class="login-senha">
+                            <label class="field"><input type="text" id="cad-fantasia"
+                                    placeholder="Nome Fantasia do Salão/Clínica" required /></label>
+                            <label class="field"><input type="text" id="cad-razao"
+                                    placeholder="Razão Social ou Nome do Responsável" required /></label>
+                            <label class="field"><input type="email" id="cad-email-empresa"
+                                    placeholder="E-mail comercial" required /></label>
+                            <label class="field"><input type="password" id="cad-senha-empresa"
+                                    placeholder="Palavra-passe" required /></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-start">Cadastrar Empresa</button>
+                </form>
+
+                <a class="btn-cadastrar" href="login.html">
+                    <span>Já tem conta? <strong>Entrar</strong></span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/cadastro.js"></script>
+</body>
+
+</html>
