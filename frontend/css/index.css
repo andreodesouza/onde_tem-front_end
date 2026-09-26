@@ -1,4 +1,3 @@
-*,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -115,9 +114,10 @@ body {
 /* Categorias */
 .categories-wrapper {
   display: flex;
-  gap: 15px;
+  gap: 50px;
   overflow-x: auto;
-  padding-bottom: 15px;
+  padding: 10px 20px;
+  padding-bottom: 30px;
   margin-bottom: 20px;
   scrollbar-width: none;
 }
@@ -236,18 +236,76 @@ body {
 }
 
 @media (max-width: 900px) {
+
+  /* Impede que qualquer elemento vaze para fora da largura do ecrã */
+  html,
+  body {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
   .main-container {
-    flex-direction: column;
-    height: auto;
+    flex-direction: column !important;
+    height: auto !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
 
-  .listings-side,
+  .listings-side {
+    width: 100% !important;
+    height: auto !important;
+    padding-bottom: 25px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
   .map-side {
-    width: 100%;
-    height: 400px;
+    width: 100% !important;
+    height: 400px !important;
   }
 
+  .logo-texto {
+    display: none !important;
+  }
+
+  .search-bar-container {
+    flex: 1 !important;
+    margin: 0 8px !important;
+  }
+
+  .search-bar-container input {
+    width: 100% !important;
+  }
+
+  /* Contém o scroll horizontal restrito estritamente a este bloco */
   .grid-cards {
-    grid-template-columns: 1fr;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 16px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: none !important;
+    padding: 0 16px 15px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    scroll-snap-type: x mandatory !important;
+    /* Garante que o scroll do carrossel é suave e não afeta o exterior */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .grid-cards::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Ajuste seguro para o cartão não estourar a largura da tela */
+  .grid-cards .card-salao {
+    flex: 0 0 85% !important;
+    /* Usa percentagem em vez de vw para evitar saltos de scroll geral */
+    width: 85% !important;
+    min-width: 85% !important;
+    max-width: 360px !important;
+    scroll-snap-align: center !important;
+    box-sizing: border-box !important;
   }
 }
