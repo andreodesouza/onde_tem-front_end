@@ -25,7 +25,7 @@ A plataforma substitui marcações informais por um sistema prático que conecta
 ## 🛠️ Tecnologias
 
 - **Frontend:** HTML5, CSS3 e JavaScript
-- **BanckEnd:** Django
+- **BanckEnd:** FastApi
 - **Recursos:** Geolocalização
 
 ---
@@ -41,5 +41,3 @@ A plataforma substitui marcações informais por um sistema prático que conecta
  
 **Instituição:** Universidade de Vassouras – Campus Saquarema
 
-## Repositório BackEnd
-https://github.com/andreodesouza/onde_tem-back_end
