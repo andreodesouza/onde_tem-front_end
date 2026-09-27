@@ -1,6 +1,6 @@
 // js/index.js
 
-const API_URL = "http://127.0.0.1:8000"; // Substitua pela sua URL do Render
+const API_URL = "https://onde-tem-back-end.onrender.com"; // Substitua pela sua URL do Render
 
 document.addEventListener("DOMContentLoaded", () => {
   inicializarMapa();
