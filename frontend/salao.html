@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onde Tem? — Detalhes do Estabelecimento</title>
+  
+  <link rel="icon" type="image/png" href="assets/img/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/salao.css">
+</head>
+
+<body>
+
+  <!-- HEADER HARMONIZADO COM O INDEX -->
+  <header class="header-principal">
+    <div class="logo-container">
+      <a href="index.html" class="btn-voltar" title="Voltar ao início">←</a>
+      <img src="assets/img/icon-192.png" alt="Logo Onde Tem" width="32" height="32">
+      <span class="logo-texto">Onde tem?</span>
+    </div>
+
+    <div class="header-actions">
+      <button id="btn-notificacao" class="btn-icone" title="Notificações">🔔</button>
+      <a href="login.html" class="btn-login-header">Login</a>
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="salao-container">
+
+    <!-- HERO / BANNER DO SALÃO -->
+    <section class="salao-hero">
+      <div class="hero-cover-wrapper">
+        <img id="salao-banner" src="" alt="Foto do Salão" class="hero-cover">
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="salao-info-card">
+        <div class="salao-info-main">
+          <h1 id="salao-nome">Carregando estabelecimento...</h1>
+          <p id="salao-especialidades" class="salao-tags"></p>
+          <p id="salao-endereco" class="salao-localizacao">📍 Carregando localização...</p>
+          <p id="salao-horario" class="salao-horario">🕒 Carregando horários...</p>
+        </div>
+
+        <div class="salao-info-actions">
+          <div class="rating-badge">
+            <span class="star">★</span>
+            <strong id="salao-rating">0.0</strong>
+            <span id="salao-reviews" class="reviews-count">(0)</span>
+          </div>
+          <a id="btn-whatsapp" href="#" target="_blank" class="btn-contato-whatsapp">
+            💬 WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTAGEM DE SERVIÇOS E RESUMO LATERAL -->
+    <section class="salao-content-grid">
+      
+      <!-- COLUNA DA ESQUERDA: LISTA DE SERVIÇOS -->
+      <div class="servicos-wrapper">
+        <h2>Serviços Disponíveis</h2>
+        <div id="lista-servicos" class="lista-servicos">
+          <!-- Serviços inseridos via JavaScript -->
+        </div>
+      </div>
+
+      <!-- COLUNA DA DIREITA: RESUMO DO AGENDAMENTO -->
+      <aside class="agendamento-sidebar">
+        <div class="agendamento-card-fixo">
+          <h3>Seu Agendamento</h3>
+          <div id="itens-selecionados" class="itens-selecionados">
+            <p class="empty-msg">Nenhum serviço selecionado ainda.</p>
+          </div>
+          
+          <hr class="divisor">
+
+          <div class="total-box">
+            <span>Total estimado:</span>
+            <strong id="valor-total">R$ 0,00</strong>
+          </div>
+
+          <button id="btn-continuar-agendamento" class="btn-primary" disabled>
+            Escolher Data e Hora
+          </button>
+        </div>
+      </aside>
+
+    </section>
+
+  </main>
+
+  <script src="js/salao.js"></script>
+</body>
+
+</html>

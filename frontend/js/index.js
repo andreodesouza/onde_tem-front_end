@@ -131,5 +131,5 @@ function configurarBusca() {
 }
 
 function abrirAgendamento(salaoId, salaoNome) {
-  console.log(`Abrir agendamento para: ${salaoNome} (ID: ${salaoId})`);
+  window.location.href = `salao.html?id=${salaoId}`;
 }
