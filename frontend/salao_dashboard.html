@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Salão - Onde Tem?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/salao_dashboard.css">
+</head>
+<body>
+    <!-- Topbar Oficial Onde Tem? -->
+    <header class="navbar-app">
+        <div class="navbar-left">
+            <button class="btn-back" onclick="history.back()" title="Voltar">←</button>
+            <div class="brand">
+                <img src="assets/img/Logo-png 5.svg" alt="Onde Tem?" class="brand-logo" onerror="this.style.display='none'">
+                <span class="brand-name">Onde tem?</span>
+            </div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="mostrarSessao('agendamentos', this)">Agendamentos</button>
+            <button class="tab-btn" onclick="mostrarSessao('servicos', this)">Serviços</button>
+            <button class="tab-btn" onclick="mostrarSessao('profissionais', this)">Profissionais</button>
+        </nav>
+
+        <div class="navbar-right">
+            <button class="btn-icon" title="Notificações">🔔</button>
+            <button class="btn-login-profile">Painel Salão</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Banner de Contexto do Salão -->
+        <section class="salon-profile-strip">
+            <div class="profile-info">
+                <h2>Studio Bella Donna</h2>
+                <p>Cabelo • Unhas • Sobrancelhas | 📍 Av. Saquarema, 1200 - Porto da Roça</p>
+            </div>
+            <div class="profile-badge">
+                ★ 4.9 (128 avaliações)
+            </div>
+        </section>
+
+        <!-- Cards de Métricas -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <span class="metric-title">Solicitações Pendentes</span>
+                <span class="metric-value pending-color" id="total-pendentes">0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">Agendamentos Confirmados</span>
+                <span class="metric-value confirmed-color" id="total-confirmados">0</span>
+            </div>
+            <div class="metric-card">
+                <span class="metric-title">Profissionais Vinculadas</span>
+                <span class="metric-value default-color" id="total-profissionais">3</span>
+            </div>
+        </section>
+
+        <!-- Sessão de Agendamentos -->
+        <section id="agendamentos" class="sessao-painel content-card">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">Gestão de Agendamentos</h3>
+                    <p class="card-subtitle">Acompanhe e responda às solicitações das suas clientes</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table" id="tabela-agendamentos">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Serviço Solicitado</th>
+                            <th>Profissional</th>
+                            <th>Data & Horário</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas geradas via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sessão de Serviços -->
+        <section id="servicos" class="sessao-painel content-card" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">Catálogo de Serviços</h3>
+                    <p class="card-subtitle">Gerencie os tratamentos e valores oferecidos no Studio</p>
+                </div>
+            </div>
+            <div class="empty-state-card">
+                <p>Nesta área são gerenciados os serviços de Cabelo, Unhas e Sobrancelhas conectados à rota <code>/api/servicos</code>.</p>
+            </div>
+        </section>
+
+        <!-- Sessão de Profissionais -->
+        <section id="profissionais" class="sessao-painel content-card" style="display: none;">
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">Equipe e Profissionais Vinculadas</h3>
+                    <p class="card-subtitle">Cadastre e gerencie as colaboradoras ativas no Studio</p>
+                </div>
+            </div>
+
+            <!-- Formulário de Cadastro -->
+            <div style="padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--border-light);">
+                <form id="form-profissional" onsubmit="salvarProfissional(event)" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Nome da Profissional</label>
+                        <input type="text" id="prof-nome" placeholder="Ex: Camila Hair" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Especialidade</label>
+                        <input type="text" id="prof-especialidade" placeholder="Ex: Cabeleireira / Mechas" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                    </div>
+                    <div style="flex: 1; min-width: 160px;">
+                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Telefone/WhatsApp</label>
+                        <input type="text" id="prof-telefone" placeholder="(22) 99999-9999" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                    </div>
+                    <button type="submit" class="btn-login-profile" style="height: 40px; padding: 0 1.5rem;">+ Cadastrar</button>
+                </form>
+            </div>
+
+            <!-- Tabela de Profissionais -->
+            <div class="table-responsive">
+                <table class="data-table" id="tabela-profissionais">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Especialidade</th>
+                            <th>Contato</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Renderizado via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/salao_dashboard.js"></script>
+</body>
+</html>

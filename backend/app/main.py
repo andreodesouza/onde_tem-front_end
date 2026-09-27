@@ -2,6 +2,10 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from . import models, schemas
+from .database import get_db
 
 app = FastAPI(title="API Onde Tem?", version="1.0.0")
 
@@ -184,3 +188,65 @@ def obter_detalhes_salao(salao_id: str):
         if salao["id"] == str(salao_id):
             return salao
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Salão não encontrado.")
+
+# --- GERENCIAMENTO DE SERVIÇOS ---
+@app.get("/api/servicos", response_model=list[schemas.ServicoResponse])
+def listar_servicos(empresa_id: int, db: Session = Depends(get_db)):
+    # Controle de acesso: retorna apenas os serviços da empresa logada
+    servicos = db.query(models.Servico).filter(models.Servico.empresa_id == empresa_id).all()
+    return servicos
+
+@app.post("/api/servicos", response_model=schemas.ServicoResponse)
+def criar_servico(servico: schemas.ServicoCreate, empresa_id: int, db: Session = Depends(get_db)):
+    novo_servico = models.Servico(**servico.dict(), empresa_id=empresa_id)
+    db.add(novo_servico)
+    db.commit()
+    db.refresh(novo_servico)
+    return novo_servico
+
+# --- GERENCIAMENTO DE AGENDAMENTOS ---
+@app.put("/api/agendamentos/{agendamento_id}/status")
+def atualizar_status_agendamento(
+    agendamento_id: int, 
+    atualizacao: schemas.StatusAgendamentoUpdate, 
+    empresa_id: int, # Validação de segurança
+    db: Session = Depends(get_db)
+):
+    agendamento = db.query(models.Agendamento).filter(models.Agendamento.id == agendamento_id).first()
+    
+    if not agendamento:
+        raise HTTPException(status_code=404, detail="Agendamento não encontrado")
+        
+    # Controle de acesso: garante que a empresa só edite seus próprios agendamentos
+    if agendamento.empresa_id != empresa_id:
+        raise HTTPException(status_code=403, detail="Acesso negado. Este agendamento pertence a outro estabelecimento.")
+
+    status_validos = ["pendente", "confirmado", "recusado", "concluido"]
+    if atualizacao.status not in status_validos:
+        raise HTTPException(status_code=400, detail="Status inválido.")
+
+    agendamento.status = atualizacao.status
+    db.commit()
+    
+    return {"mensagem": f"Status atualizado com sucesso para: {atualizacao.status}"}
+
+# --- PROFISSIONAIS VINCULADOS À EMPRESA ---
+@app.get("/api/profissionais", response_model=list[schemas.ProfissionalResponse])
+def listar_profissionais(empresa_id: int, db: Session = Depends(get_db)):
+    # Retorna apenas profissionais da empresa logada
+    return db.query(models.Profissional).filter(models.Profissional.empresa_id == empresa_id).all()
+
+@app.post("/api/profissionais", response_model=schemas.ProfissionalResponse)
+def cadastrar_profissional(
+    profissional: schemas.ProfissionalCreate, 
+    empresa_id: int, 
+    db: Session = Depends(get_db)
+):
+    novo_profissional = models.Profissional(
+        **profissional.dict(),
+        empresa_id=empresa_id
+    )
+    db.add(novo_profissional)
+    db.commit()
+    db.refresh(novo_profissional)
+    return novo_profissional
