@@ -261,3 +261,15 @@ async function salvarServico(event) {
         renderizarTabelaServicos(servicosMock);
     }
 }
+
+function fazerLogout() {
+    if (confirm("Deseja realmente sair da conta do estabelecimento?")) {
+        // Limpa possíveis tokens e dados gravados na sessão
+        localStorage.removeItem('empresa_id');
+        localStorage.removeItem('token');
+        sessionStorage.clear();
+
+        // Redireciona para a página de login
+        window.location.href = 'login.html';
+    }
+}

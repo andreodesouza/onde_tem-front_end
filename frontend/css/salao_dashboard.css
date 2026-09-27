@@ -241,6 +241,23 @@ body {
     margin-top: 0.15rem;
 }
 
+.btn-logout {
+    background-color: transparent;
+    color: var(--color-recusado);
+    border: 1.5px solid var(--color-recusado);
+    padding: 0.45rem 1.2rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+    background-color: var(--color-recusado);
+    color: #FFFFFF;
+}
+
 /* --- Tabela de Agendamentos --- */
 .table-responsive {
     width: 100%;
