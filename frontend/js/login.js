@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (resultado.usuario.tipo === "empresa") {
                     window.location.href = "painel-empresa.html";
                 } else {
-                    window.location.href = "index.html";
+                    window.location.href = "user_dashboard.html";
                 }
             } else {
                 alert(resultado.detail || "E-mail ou palavra-passe incorretos.");
