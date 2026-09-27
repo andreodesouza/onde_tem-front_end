@@ -1,11 +1,15 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, APIRouter, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
-from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from . import models, schemas
-from .database import get_db
+from .database import engine, Base, get_db
+
+# Cria automaticamente as tabelas (empresas, servicos, profissionais, etc.) na base de dados
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title="API Onde Tem - Gestão de Salão")
 
 app = FastAPI(title="API Onde Tem?", version="1.0.0")
 

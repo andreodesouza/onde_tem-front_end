@@ -13,10 +13,18 @@ let profissionaisMock = [
     { id: 3, nome: "Carla Sobrancelhas", especialidade: "Designer de Sobrancelhas & Micropigmentação", telefone: "(22) 99666-5566" }
 ];
 
+// Mock inicial de serviços femininos
+let servicosMock = [
+    { id: 1, nome: "Mechas & Hidratação", descricao: "Descoloração segura com tratamento reconstrutor", preco: 250.00, duracao_minutos: 180, profissional_nome: "Camila Hair" },
+    { id: 2, nome: "Design de Sobrancelhas + Buço", descricao: "Alinhamento com pinça/cera e acabamento com henna", preco: 55.00, duracao_minutos: 45, profissional_nome: "Carla Sobrancelhas" },
+    { id: 3, nome: "Alongamento em Gel (Manicure)", descricao: "Aplicação e cutilagem russa", preco: 130.00, duracao_minutos: 120, profissional_nome: "Juliana Nails" }
+];
+
 // Inicialização única ao carregar o DOM
 document.addEventListener('DOMContentLoaded', () => {
     carregarAgendamentos();
     carregarProfissionais();
+    carregarServicos();
 });
 
 // Alternância de abas
@@ -133,6 +141,7 @@ function renderizarTabelaProfissionais(lista) {
 
     const badgeCount = document.getElementById('total-profissionais');
     if (badgeCount) badgeCount.textContent = lista.length;
+    atualizarSelectProfissionais(lista);
 }
 
 async function salvarProfissional(event) {
@@ -161,5 +170,94 @@ async function salvarProfissional(event) {
         profissionaisMock.push({ id: Date.now(), ...payload });
         document.getElementById('form-profissional').reset();
         renderizarTabelaProfissionais(profissionaisMock);
+    }
+}
+
+// --- GESTÃO DE SERVIÇOS ---
+async function carregarServicos() {
+    try {
+        const response = await fetch(`/api/servicos?empresa_id=${EMPRESA_ID}`);
+        if (!response.ok) throw new Error();
+        const lista = await response.json();
+        renderizarTabelaServicos(lista);
+    } catch {
+        renderizarTabelaServicos(servicosMock);
+    }
+}
+
+function renderizarTabelaServicos(lista) {
+    const tbody = document.querySelector('#tabela-servicos tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    lista.forEach(serv => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${serv.nome}</strong></td>
+            <td>${serv.descricao || 'Sem descrição'}</td>
+            <td>R$ ${parseFloat(serv.preco).toFixed(2)}</td>
+            <td>${serv.duracao_minutos} min</td>
+            <td>${serv.profissional_nome || 'Equipe Geral'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Atualiza o select de profissionais dentro do formulário de serviço
+function atualizarSelectProfissionais(profissionais) {
+    const select = document.getElementById('serv-profissional');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Qualquer profissional (Geral)</option>';
+    profissionais.forEach(prof => {
+        const opt = document.createElement('option');
+        opt.value = prof.id;
+        opt.textContent = `${prof.nome} (${prof.especialidade})`;
+        select.appendChild(opt);
+    });
+}
+
+async function salvarServico(event) {
+    event.preventDefault();
+
+    const nome = document.getElementById('serv-nome').value;
+    const preco = parseFloat(document.getElementById('serv-preco').value);
+    const duracao_minutos = parseInt(document.getElementById('serv-duracao').value);
+    const profissional_id = document.getElementById('serv-profissional').value || null;
+    const descricao = document.getElementById('serv-descricao').value;
+
+    const payload = {
+        nome,
+        preco,
+        duracao_minutos,
+        profissional_id: profissional_id ? parseInt(profissional_id) : null,
+        descricao
+    };
+
+    try {
+        const response = await fetch(`/api/servicos?empresa_id=${EMPRESA_ID}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+            document.getElementById('form-servico').reset();
+            carregarServicos();
+        } else {
+            throw new Error();
+        }
+    } catch {
+        // Fallback local se a API não estiver conectada
+        const profSelect = document.getElementById('serv-profissional');
+        const profNome = profSelect.selectedIndex > 0 ? profSelect.options[profSelect.selectedIndex].text.split(' (')[0] : 'Equipe Geral';
+
+        servicosMock.push({
+            id: Date.now(),
+            ...payload,
+            profissional_nome: profNome
+        });
+        document.getElementById('form-servico').reset();
+        renderizarTabelaServicos(servicosMock);
     }
 }
