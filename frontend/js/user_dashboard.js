@@ -24,6 +24,47 @@ const historico = [
     { id: 6, servico: "Escova", data: "21 de março 2026", hora: "09:30", duracao: "40 min", status: "finalizado" }
 ];
 
+const saloes = [
+    {
+        id: 1,
+        nome: "Studio Bella Donna",
+        nota: "4.8",
+        endereco: "Avenida Sayonara nº 200",
+        servicos: "Cabelo • Unhas • Hidratação",
+        foto: "assets/img/saloes/bella.jpg",
+        favorito: false
+    },
+    {
+        id: 2,
+        nome: "Espaço Lumière",
+        nota: "4.9",
+        endereco: "Rua das Acácias nº 85",
+        servicos: "Cabelo • Escova • Coloração",
+        foto: "assets/img/saloes/lumiere.jpg",
+        favorito: false
+    },
+    {
+        id: 3,
+        nome: "Nail & Co",
+        nota: "4.7",
+        endereco: "Avenida Central nº 410",
+        servicos: "Unhas • Sobrancelha • Spa",
+        foto: "assets/img/saloes/nail.jpg",
+        favorito: false
+    },
+    {
+        id: 4,
+        nome: "Casa da Beleza",
+        nota: "4.6",
+        endereco: "Rua do Comércio nº 122",
+        servicos: "Cabelo • Barba • Hidratação",
+        foto: "assets/img/saloes/casa.jpg",
+        favorito: false
+    }
+];
+
+let listaCompleta = false;
+
 const iconeServico = `
 <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
   <path d="M30 14c2-6 1-10-2-12 4 1 8 5 9 11" stroke="#472969" stroke-width="1.5" stroke-linecap="round"/>
@@ -95,23 +136,97 @@ function renderItem(item) {
     </article>`;
 }
 
-function filtrarAgendamentos() {
-    const termo = document.getElementById("busca-procedimento").value.trim().toLowerCase();
-    if (!termo) return agendamentos.slice();
-    return agendamentos.filter((item) => item.servico.toLowerCase().includes(termo));
+function termoBusca() {
+    return document.getElementById("busca-procedimento").value.trim().toLowerCase();
+}
+
+function escapar(texto) {
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+}
+
+function filtrarPorServico(lista) {
+    const termo = termoBusca();
+    if (!termo) return lista.slice();
+    return lista.filter((item) => item.servico.toLowerCase().includes(termo));
+}
+
+function filtrarSaloes() {
+    const termo = termoBusca();
+    if (!termo) return saloes.slice();
+    return saloes.filter((salao) => {
+        const campos = `${salao.nome} ${salao.endereco} ${salao.servicos}`.toLowerCase();
+        return campos.includes(termo);
+    });
+}
+
+const iconeCoracao = `
+<svg viewBox="0 0 24 24" aria-hidden="true">
+  <path d="M12 19.4l-1.1-1C6.2 14.2 3.5 11.7 3.5 8.6 3.5 6.2 5.3 4.4 7.7 4.4c1.4 0 2.7.6 3.6 1.7.9-1.1 2.2-1.7 3.6-1.7 2.4 0 4.2 1.8 4.2 4.2 0 3.1-2.7 5.6-7.4 9.8L12 19.4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+</svg>`;
+
+const iconeEstrela = `
+<svg viewBox="0 0 24 24" aria-hidden="true">
+  <path d="M12 3.6l2.2 4.6 5 .7-3.6 3.5.9 5.1L12 15.1 7.5 17.5l.9-5.1L4.8 8.9l5-.7L12 3.6z"/>
+</svg>`;
+
+function renderSalao(salao) {
+    const ativo = salao.favorito ? " is-ativo" : "";
+    const pressionado = salao.favorito ? "true" : "false";
+    const rotulo = salao.favorito ? "Remover dos favoritos" : "Salvar nos favoritos";
+
+    return `
+    <article class="salao">
+      <div class="salao-capa">
+        <img src="${escapar(salao.foto)}" alt="">
+        <button type="button" class="salao-favorito${ativo}" data-id="${salao.id}" aria-pressed="${pressionado}" aria-label="${escapar(rotulo)}: ${escapar(salao.nome)}">
+          ${iconeCoracao}
+        </button>
+        <div class="salao-info">
+          <div class="salao-linha">
+            <h3>${escapar(salao.nome)}</h3>
+            <span class="salao-nota">${iconeEstrela} ${escapar(salao.nota)}</span>
+          </div>
+          <p>${escapar(salao.endereco)}</p>
+          <p>${escapar(salao.servicos)}</p>
+        </div>
+      </div>
+      <div class="salao-acoes">
+        <button type="button" class="btn-salao" data-acao="agendar" data-id="${salao.id}">Agendar</button>
+        <button type="button" class="btn-salao" data-acao="perfil" data-id="${salao.id}">Conhecer perfil</button>
+      </div>
+    </article>`;
+}
+
+function renderSaloes() {
+    const lista = document.getElementById("lista-saloes");
+    const encontrados = filtrarSaloes();
+
+    lista.innerHTML = encontrados.length
+        ? encontrados.map(renderSalao).join("")
+        : `<p class="saloes-vazio">Nenhum salão encontrado perto de você.</p>`;
 }
 
 function renderListas() {
-    const proximos = filtrarAgendamentos();
+    const proximos = filtrarPorServico(agendamentos);
     const listaProximos = document.getElementById("lista-proximos");
-    const listaTodos = document.getElementById("lista-todos");
+    const listaAgendamentos = document.getElementById("lista-agendamentos");
+    const origem = listaCompleta ? agendamentos.concat(historico) : agendamentos;
+    const visiveis = filtrarPorServico(origem);
 
     listaProximos.innerHTML = proximos.length
         ? proximos.map(renderItem).join("")
         : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
 
-    const todos = agendamentos.concat(historico);
-    listaTodos.innerHTML = todos.map(renderItem).join("");
+    listaAgendamentos.innerHTML = visiveis.length
+        ? visiveis.map(renderItem).join("")
+        : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
+
+    document.getElementById("ver-todos-agendamentos").textContent = listaCompleta ? "Ver menos" : "Ver todos >";
+    renderSaloes();
     atualizarStats();
 }
 
@@ -123,6 +238,8 @@ function mostrarView(nome) {
     document.querySelectorAll(".menu-item").forEach((botao) => {
         botao.classList.toggle("is-active", botao.dataset.view === nome);
     });
+
+    document.querySelector(".conteudo").scrollTop = 0;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -131,17 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("sidebar-nome").textContent = nome;
     document.getElementById("main-nome").textContent = nome;
+    document.getElementById("agendamentos-nome").textContent = nome;
     document.getElementById("perfil-nome").textContent = nome === "visitante" ? "—" : nome;
     document.getElementById("perfil-email").textContent = usuario && usuario.email ? usuario.email : "—";
 
     renderListas();
 
     document.getElementById("busca-procedimento").addEventListener("input", () => {
-        mostrarView("dashboard");
+        const viewAtiva = document.querySelector(".view:not([hidden])");
+        if (!viewAtiva || viewAtiva.id !== "view-agendamentos") {
+            mostrarView("dashboard");
+        }
         renderListas();
     });
 
-    document.getElementById("lista-proximos").addEventListener("click", (evento) => {
+    function confirmarAgendamento(evento) {
         const botao = evento.target.closest(".btn-confirmar");
         if (!botao) return;
 
@@ -150,16 +271,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         item.status = "agendado";
         renderListas();
-    });
+    }
+
+    document.getElementById("lista-proximos").addEventListener("click", confirmarAgendamento);
+    document.getElementById("lista-agendamentos").addEventListener("click", confirmarAgendamento);
 
     document.getElementById("ver-todos").addEventListener("click", () => {
         document.getElementById("busca-procedimento").value = "";
+        listaCompleta = true;
         renderListas();
         mostrarView("agendamentos");
     });
 
+    document.getElementById("ver-todos-agendamentos").addEventListener("click", () => {
+        listaCompleta = !listaCompleta;
+        renderListas();
+    });
+
+    document.getElementById("lista-saloes").addEventListener("click", (evento) => {
+        const favorito = evento.target.closest(".salao-favorito");
+        if (!favorito) return;
+
+        const salao = saloes.find((item) => item.id === Number(favorito.dataset.id));
+        if (!salao) return;
+
+        salao.favorito = !salao.favorito;
+        renderSaloes();
+    });
+
     document.querySelectorAll(".menu-item").forEach((botao) => {
-        botao.addEventListener("click", () => mostrarView(botao.dataset.view));
+        botao.addEventListener("click", () => {
+            if (botao.dataset.view === "agendamentos") listaCompleta = false;
+            mostrarView(botao.dataset.view);
+            renderListas();
+        });
     });
 
     document.getElementById("btn-sair").addEventListener("click", () => {

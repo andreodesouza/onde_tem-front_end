@@ -130,11 +130,21 @@
 
       <section class="view" id="view-agendamentos" hidden>
         <header class="saudacao">
-          <h1>Agendamentos</h1>
-          <p>Todos os seus horários</p>
+          <h1>Olá, <strong id="agendamentos-nome">visitante</strong></h1>
+          <p>Acompanhe seus agendamentos por aqui</p>
         </header>
-        <section class="painel">
-          <div id="lista-todos" class="lista"></div>
+
+        <section class="painel" aria-labelledby="titulo-agendamentos-proximos">
+          <header class="painel-topo">
+            <h2 id="titulo-agendamentos-proximos">Próximos agendamentos</h2>
+            <button type="button" class="ver-todos" id="ver-todos-agendamentos">Ver todos &gt;</button>
+          </header>
+          <div id="lista-agendamentos" class="lista"></div>
+        </section>
+
+        <section class="sugestoes" aria-labelledby="titulo-sugestoes">
+          <h2 id="titulo-sugestoes">Sugestões de salões</h2>
+          <div id="lista-saloes" class="saloes"></div>
         </section>
       </section>
 
