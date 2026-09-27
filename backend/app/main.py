@@ -107,3 +107,67 @@ def efetuar_login(dados: UsuarioLogin):
 def listar_saloes():
     # Retorna a lista de estabelecimentos para preencher os cards no index.html
     return saloes_db
+
+# --- MODELO E BASE DE DADOS PARA AGENDAMENTOS ---
+
+class AgendamentoCriacao(BaseModel):
+    salao_id: str
+    data: str
+    hora: str
+    cliente_email: Optional[str] = "cliente@email.com"
+
+agendamentos_db = []
+
+@app.post("/api/agendamentos", status_code=status.HTTP_201_CREATED)
+def criar_agendamento(agendamento: AgendamentoCriacao):
+    # Verifica se o horário já está ocupado para o mesmo salão, data e hora
+    for a in agendamentos_db:
+        if a["salao_id"] == agendamento.salao_id and a["data"] == agendamento.data and a["hora"] == agendamento.hora:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Este horário já está ocupado neste estabelecimento!"
+            )
+    
+    agendamentos_db.append(agendamento.dict())
+    return {"mensagem": "Agendamento guardado com sucesso na base de dados!"}
+
+@app.get("/api/agendamentos/{salao_id}")
+def listar_agendamentos_salao(salao_id: str):
+    # Retorna todos os horários já ocupados daquele salão específico
+    return [a for a in agendamentos_db if a["salao_id"] == salao_id]
+
+from pydantic import BaseModel
+from typing import Optional
+
+# Modelo para receber os dados do agendamento enviados pelo front-end
+class AgendamentoCriacao(BaseModel):
+    salao_id: str
+    data: str
+    hora: str
+    cliente_email: Optional[str] = "cliente@email.com"
+
+# Lista temporária que armazena os agendamentos na memória
+agendamentos_db = []
+
+@app.post("/api/agendamentos", status_code=status.HTTP_201_CREATED)
+def criar_agendamento(agendamento: AgendamentoCriacao):
+    # Valida se os campos obrigatórios foram preenchidos
+    if not agendamento.salao_id or not agendamento.data or not agendamento.hora:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Todos os campos (salão, data e hora) são obrigatórios."
+        )
+
+    # Validação de conflito: barra se o mesmo salão já tiver marcação no mesmo dia e hora
+    for a in agendamentos_db:
+        if (a["salao_id"] == agendamento.salao_id and 
+            a["data"] == agendamento.data and 
+            a["hora"] == agendamento.hora):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, 
+                detail="Este horário já está ocupado neste estabelecimento!"
+            )
+    
+    # Se estiver livre, salva o agendamento na lista
+    agendamentos_db.append(agendamento.dict())
+    return {"mensagem": "Agendamento validado e cadastrado com sucesso!"}
