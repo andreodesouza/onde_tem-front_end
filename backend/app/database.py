@@ -1,14 +1,24 @@
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 from urllib.parse import quote_plus
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+# Localiza a pasta raiz do projeto (subindo duas pastas a partir de database.py)
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
+
+# O restante do código continua igual...
+
+# O restante do seu código continua igual...
 
 # Codifica a palavra-passe para que caracteres especiais (como o '@') não quebrem a URL
 senha_segura = quote_plus(DB_PASSWORD) if DB_PASSWORD else ""

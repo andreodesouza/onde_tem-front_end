@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function mostrarSessao(sessaoId, btnElement) {
     document.querySelectorAll('.sessao-painel').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    
+
     const sessaoDestino = document.getElementById(sessaoId);
     if (sessaoDestino) sessaoDestino.style.display = 'block';
-    
+
     if (btnElement) {
         btnElement.classList.add('active');
     }
@@ -45,7 +45,7 @@ async function carregarAgendamentos() {
     try {
         const response = await fetch(`/api/agendamentos/empresa/${EMPRESA_ID}`);
         if (!response.ok) throw new Error('Falha ao carregar agendamentos');
-        
+
         const agendamentos = await response.json();
         renderizarTabelaAgendamentos(agendamentos);
     } catch (error) {
@@ -207,7 +207,7 @@ function renderizarTabelaServicos(lista) {
 function atualizarSelectProfissionais(profissionais) {
     const select = document.getElementById('serv-profissional');
     if (!select) return;
-    
+
     select.innerHTML = '<option value="">Qualquer profissional (Geral)</option>';
     profissionais.forEach(prof => {
         const opt = document.createElement('option');

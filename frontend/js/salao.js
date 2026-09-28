@@ -1,7 +1,9 @@
 // js/salao.js
 
 // Substitua pelo endereço real do backend quando estiver no ar (ou deixe localhost em dev)
-const API_URL = "https://onde-tem-back-end.onrender.com";
+const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+  ? "http://127.0.0.1:8000"               // URL usada quando você testa localmente
+  : "https://onde-tem-back-end.onrender.com"; // URL usada quando o site estiver no ar (ex: Vercel/Render)
 
 let carrinhoServicos = [];
 

@@ -1,6 +1,8 @@
 // js/login.js
 
-const API_URL = "https://onde-tem-back-end.onrender.com"; // Substitua pela sua URL do Render
+const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "http://127.0.0.1:8000"               // URL usada quando você testa localmente
+    : "https://onde-tem-back-end.onrender.com"; // URL usada quando o site estiver no ar (ex: Vercel/Render)
 
 document.addEventListener("DOMContentLoaded", () => {
     const formLogin = document.getElementById("form-login");
