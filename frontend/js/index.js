@@ -130,6 +130,72 @@ function configurarBusca() {
   });
 }
 
+let salaoAtualId = "";
+let salaoAtualNome = "";
+
 function abrirAgendamento(salaoId, salaoNome) {
-  console.log(`Abrir agendamento para: ${salaoNome} (ID: ${salaoId})`);
+  salaoAtualId = salaoId;
+  salaoAtualNome = salaoNome;
+  
+  const tituloModal = document.getElementById("modal-titulo-salao");
+  if (tituloModal) {
+    tituloModal.innerText = `Agendar em: ${salaoNome}`;
+  }
+  
+  const modal = document.getElementById("modal-agendamento");
+  if (modal) {
+    modal.style.display = "flex";
+  }
 }
+
+function fecharModalAgendamento() {
+  const modal = document.getElementById("modal-agendamento");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const formAgendamento = document.getElementById("form-agendamento");
+  if (formAgendamento) {
+    formAgendamento.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const data = document.getElementById("data-agendamento").value;
+      const hora = document.getElementById("hora-agendamento").value;
+      
+      if (!data || !hora) {
+        alert("Por favor, selecione a data e a hora.");
+        return;
+      }
+      
+      try {
+        const resposta = await fetch(`${API_URL}/api/agendamentos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            salao_id: salaoAtualId,
+            data: data,
+            hora: hora,
+            cliente_email: "usuario@teste.com"
+          })
+        });
+
+        const resultado = await resposta.json();
+
+        if (resposta.ok) {
+          alert(`🎉 Sucesso!\n${resultado.mensagem}\n\nSalão: ${salaoAtualNome}\nData: ${data} às ${hora}`);
+          fecharModalAgendamento();
+          formAgendamento.reset();
+        } else {
+          alert(`❌ Erro: ${resultado.detail}`);
+        }
+      } catch (error) {
+        console.error("Erro ao conectar com o servidor:", error);
+        alert("Erro ao tentar registrar o agendamento.");
+      }
+    });
+  }
+});
