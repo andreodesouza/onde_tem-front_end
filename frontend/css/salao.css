@@ -1,0 +1,348 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+  color: #333333;
+  padding-bottom: 60px;
+}
+
+/* --- HEADER --- */
+.header-principal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eeeeee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-voltar {
+  text-decoration: none;
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.logo-texto {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #553a73;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-icone {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.btn-login-header {
+  text-decoration: none;
+  background-color: #553a73;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* --- CONTAINER PRINCIPAL --- */
+.salao-container {
+  max-width: 1140px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+/* --- HERO BANNER --- */
+.salao-hero {
+  position: relative;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  margin-bottom: 28px;
+}
+
+.hero-cover-wrapper {
+  position: relative;
+  width: 100%;
+  height: 260px;
+}
+
+.hero-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+.salao-info-card {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.salao-info-main h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.salao-tags {
+  font-size: 0.9rem;
+  color: #553a73;
+  font-weight: 500;
+  margin: 4px 0 8px;
+}
+
+.salao-localizacao, .salao-horario {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.salao-info-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.rating-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff4e5;
+  color: #b7791f;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.rating-badge .star {
+  color: #f6ad55;
+}
+
+.reviews-count {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.btn-contato-whatsapp {
+  text-decoration: none;
+  background-color: #25d366;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.btn-contato-whatsapp:hover {
+  opacity: 0.9;
+}
+
+/* --- GRID DE SERVIÇOS & RESUMO --- */
+.salao-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.servicos-wrapper h2 {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+}
+
+.lista-servicos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.item-servico {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #f0f0f0;
+}
+
+.servico-detalhes h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.servico-detalhes p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 4px 0 8px;
+  max-width: 480px;
+}
+
+.servico-meta {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.servico-acao {
+  text-align: right;
+  min-width: 110px;
+}
+
+.servico-preco {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #553a73;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.btn-selecionar {
+  background: transparent;
+  color: #553a73;
+  border: 1.5px solid #553a73;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-selecionar.selecionado {
+  background: #553a73;
+  color: #fff;
+}
+
+/* --- SIDEBAR RESUMO --- */
+.agendamento-card-fixo {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 90px;
+}
+
+.agendamento-card-fixo h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.itens-selecionados {
+  min-height: 80px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.empty-msg {
+  font-size: 0.85rem;
+  color: #999;
+  text-align: center;
+  margin-top: 25px;
+}
+
+.resumo-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.divisor {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 16px 0;
+}
+
+.total-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 1rem;
+}
+
+.total-box strong {
+  font-size: 1.25rem;
+  color: #553a73;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: #553a73;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:disabled {
+  background-color: #e0e0e0;
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+/* --- RESPONSIVIDADE (MOBILE) --- */
+@media (max-width: 768px) {
+  .salao-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .salao-info-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .salao-info-actions {
+    align-items: flex-start;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .agendamento-card-fixo {
+    position: static;
+  }
+}
