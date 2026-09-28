@@ -162,9 +162,14 @@ def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
         }
     }
 
+# --- ROTA PARA LISTAR TODOS OS SALÕES ---
+@app.get("/api/saloes")
+def listar_saloes():
+    return saloes_db
+
+# --- ROTA PARA BUSCAR SALÃO POR ID ---
 @app.get("/api/saloes/{salao_id}")
-def obter_salao(salao_id: str): # ou int, dependendo de como você salva
-    # Procure o salão no seu banco de dados ou lista pelo salao_id
+def obter_salao(salao_id: str):
     salao = next((s for s in saloes_db if s["id"] == salao_id), None)
     if not salao:
         raise HTTPException(status_code=404, detail="Salão não encontrado")
