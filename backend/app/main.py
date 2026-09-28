@@ -1,37 +1,26 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Optional, List
+from sqlalchemy.orm import Session
+
+# Importa da própria estrutura do app
+from .database import engine, Base, get_db
+from .models import UsuarioModel
+from .schemas import UsuarioCadastro, UsuarioLogin
+
+# Cria as tabelas automaticamente se não existirem
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="API Onde Tem?", version="1.0.0")
 
-# Configuração do CORS para permitir a comunicação com o front-end (Vercel ou local)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Em produção, pode substituir pelo domínio exato da sua Vercel
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# --- MODELOS DE DADOS (Pydantic) ---
-
-class UsuarioCadastro(BaseModel):
-    nome: Optional[str] = None
-    telefone: Optional[str] = None
-    nome_fantasia: Optional[str] = None
-    razao_social: Optional[str] = None
-    email: str
-    senha: str
-    tipo: str  # "cliente" ou "empresa"
-
-class UsuarioLogin(BaseModel):
-    email: str
-    senha: str
-
-# --- BASES DE DADOS TEMPORÁRIAS (Substituir posteriormente por PostgreSQL/Supabase) ---
-usuarios_db = []
-
+# --- SALÕES FICTÍCIOS ---
 saloes_db = [
     {
         "id": "1",
@@ -65,45 +54,58 @@ saloes_db = [
 # --- ROTAS DA API ---
 
 @app.post("/api/cadastro", status_code=status.HTTP_201_CREATED)
-def cadastrar_utilizador(usuario: UsuarioCadastro):
-    # Verifica se o e-mail já existe na base de dados
-    for u in usuarios_db:
-        if u["email"] == usuario.email.lower().strip():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, 
-                detail="Este e-mail já está registado."
-            )
+def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)):
+    email_limpo = usuario.email.lower().strip()
     
-    # Guarda o utilizador normalizado
-    novo_usuario = usuario.dict()
-    novo_usuario["email"] = usuario.email.lower().strip()
-    usuarios_db.append(novo_usuario)
+    # Verifica se já existe no PostgreSQL
+    existente = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
+    if existente:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Este e-mail já está registado."
+        )
+    
+    novo_usuario = UsuarioModel(
+        email=email_limpo,
+        senha=usuario.senha,
+        tipo=usuario.tipo,
+        nome=usuario.nome,
+        telefone=usuario.telefone,
+        nome_fantasia=usuario.nome_fantasia,
+        razao_social=usuario.razao_social
+    )
+    
+    db.add(novo_usuario)
+    db.commit()
+    db.refresh(novo_usuario)
     
     return {"mensagem": "Registo efetuado com sucesso!"}
 
-
 @app.post("/api/login")
-def efetuar_login(dados: UsuarioLogin):
+def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
     email_limpo = dados.email.lower().strip()
     
-    for u in usuarios_db:
-        if u["email"] == email_limpo and u["senha"] == dados.senha:
-            return {
-                "token": "token-jwt-exemplo-seguro",
-                "usuario": {
-                    "nome": u.get("nome") or u.get("nome_fantasia"),
-                    "email": u["email"],
-                    "tipo": u["tipo"]
-                }
-            }
-            
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, 
-        detail="E-mail ou palavra-passe incorretos."
-    )
-
+    usuario = db.query(UsuarioModel).filter(
+        UsuarioModel.email == email_limpo,
+        UsuarioModel.senha == dados.senha
+    ).first()
+    
+    if not usuario:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="E-mail ou palavra-passe incorretos."
+        )
+        
+    return {
+        "token": "token-jwt-exemplo-seguro",
+        "usuario": {
+            "nome": usuario.nome or usuario.nome_fantasia,
+            "email": usuario.email,
+            "tipo": usuario.tipo
+        }
+    }
 
 @app.get("/api/saloes")
 def listar_saloes():
-    # Retorna a lista de estabelecimentos para preencher os cards no index.html
+    # Retorna os salões fictícios para alimentar o front-end e o mapa
     return saloes_db
