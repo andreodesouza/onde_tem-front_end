@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Redireciona com base no tipo retornado pelo back-end
                 if (resultado.usuario.tipo === "empresa") {
-                    window.location.href = "painel-empresa.html";
+                    window.location.href = "salao_dashboard.html";
                 } else {
                     window.location.href = "user_dashboard.html";
                 }
