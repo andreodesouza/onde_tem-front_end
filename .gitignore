@@ -2,5 +2,6 @@ backend/.venv/
 backend/__pycache__/
 backend/db.sqlite3
 backend/.env
+.cursor/
 .DS_Store
 Thumbs.db
