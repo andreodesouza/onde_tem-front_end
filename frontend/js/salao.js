@@ -1,7 +1,7 @@
 // js/salao.js
 
 // Substitua pelo endereço real do backend quando estiver no ar (ou deixe localhost em dev)
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = "https://onde-tem-back-end.onrender.com";
 
 let carrinhoServicos = [];
 
@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function carregarDadosSalao(id) {
   try {
-    const res = await fetch(`${API_URL}/saloes/${id}`);
+    // CORREÇÃO: Adicionado o "/api" antes de /saloes/
+    const res = await fetch(`${API_URL}/api/saloes/${id}`);
     if (!res.ok) throw new Error("Erro ao buscar dados do estabelecimento.");
 
     const salao = await res.json();

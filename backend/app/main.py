@@ -21,6 +21,7 @@ app.add_middleware(
 )
 
 # --- SALÕES FICTÍCIOS ---
+# --- SALÕES FICTÍCIOS ---
 saloes_db = [
     {
         "id": "1",
@@ -29,7 +30,28 @@ saloes_db = [
         "lat": -22.901844,
         "lng": -42.474725,
         "servicos": "Cabelo • Unhas • Sobrancelhas",
-        "img": "https://frizzar.com.br/blog/wp-content/uploads/2025/01/salao-de-beleza-moderno.webp"
+        "img": "https://frizzar.com.br/blog/wp-content/uploads/2025/01/salao-de-beleza-moderno.webp",
+        "endereco": "Rua das Flores, 123 - Centro, Araruama",
+        "horario": "Segunda a Sábado, das 09:00 às 19:00",
+        "telefone": "22998887766",
+        "avaliacao": 4.8,
+        "total_avaliacoes": 42,
+        "servicos_detalhados": [
+            {
+                "id": "srv-1",
+                "nome": "Corte de Cabelo Feminino",
+                "descricao": "Corte personalizado com lavagem e escova inclusas.",
+                "duracao_min": 50,
+                "preco": 80.00
+            },
+            {
+                "id": "srv-2",
+                "nome": "Manicure e Pedicure",
+                "descricao": "Cutilagem completa e esmaltação à escolha.",
+                "duracao_min": 60,
+                "preco": 50.00
+            }
+        ]
     },
     {
         "id": "2",
@@ -38,7 +60,28 @@ saloes_db = [
         "lat": -22.930476,
         "lng": -42.489812,
         "servicos": "Rosto • Depilação • Massagem",
-        "img": "https://s2.glbimg.com/Ha2q-YYa3pCWtwM4E51zi_p-POI=/940x523/e.glbimg.com/og/ed/f/original/2019/02/20/blow-dry-bar-del-mar-chairs-counter-853427.jpg"
+        "img": "https://s2.glbimg.com/Ha2q-YYa3pCWtwM4E51zi_p-POI=/940x523/e.glbimg.com/og/ed/f/original/2019/02/20/blow-dry-bar-del-mar-chairs-counter-853427.jpg",
+        "endereco": "Av. Principal, 456 - Iguabinha",
+        "horario": "Segunda a Sexta, das 08:00 às 18:00",
+        "telefone": "22988776655",
+        "avaliacao": 4.9,
+        "total_avaliacoes": 38,
+        "servicos_detalhados": [
+            {
+                "id": "srv-3",
+                "nome": "Limpeza de Pele Profunda",
+                "descricao": "Remoção de cravos, esfoliação e hidratação facial.",
+                "duracao_min": 90,
+                "preco": 120.00
+            },
+            {
+                "id": "srv-4",
+                "nome": "Massagem Relaxante",
+                "descricao": "Massagem corporal com óleos essenciais.",
+                "duracao_min": 60,
+                "preco": 100.00
+            }
+        ]
     },
     {
         "id": "3",
@@ -47,7 +90,21 @@ saloes_db = [
         "lat": -22.888828,
         "lng": -42.467136,
         "servicos": "Unhas • Sobrancelhas • Rosto",
-        "img": "https://ferrante.com.br/wp-content/uploads/2024/11/decoracao-minimalista-salao.jpg.jpeg"
+        "img": "https://ferrante.com.br/wp-content/uploads/2024/11/decoracao-minimalista-salao.jpg.jpeg",
+        "endereco": "Praça da Matriz, 78 - Centro",
+        "horario": "Terça a Domingo, das 10:00 às 20:00",
+        "telefone": "22977665544",
+        "avaliacao": 4.7,
+        "total_avaliacoes": 19,
+        "servicos_detalhados": [
+            {
+                "id": "srv-5",
+                "nome": "Design de Sobrancelhas",
+                "descricao": "Alinhamento com pinça e henna (opcional).",
+                "duracao_min": 30,
+                "preco": 45.00
+            }
+        ]
     }
 ]
 
@@ -105,7 +162,10 @@ def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
         }
     }
 
-@app.get("/api/saloes")
-def listar_saloes():
-    # Retorna os salões fictícios para alimentar o front-end e o mapa
-    return saloes_db
+@app.get("/api/saloes/{salao_id}")
+def obter_salao(salao_id: str): # ou int, dependendo de como você salva
+    # Procure o salão no seu banco de dados ou lista pelo salao_id
+    salao = next((s for s in saloes_db if s["id"] == salao_id), None)
+    if not salao:
+        raise HTTPException(status_code=404, detail="Salão não encontrado")
+    return salao

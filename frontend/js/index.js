@@ -133,19 +133,10 @@ function configurarBusca() {
 let salaoAtualId = "";
 let salaoAtualNome = "";
 
+// Substitua a função antiga por esta:
 function abrirAgendamento(salaoId, salaoNome) {
-  salaoAtualId = salaoId;
-  salaoAtualNome = salaoNome;
-  
-  const tituloModal = document.getElementById("modal-titulo-salao");
-  if (tituloModal) {
-    tituloModal.innerText = `Agendar em: ${salaoNome}`;
-  }
-  
-  const modal = document.getElementById("modal-agendamento");
-  if (modal) {
-    modal.style.display = "flex";
-  }
+  // Redireciona para a página do salão passando o ID como parâmetro na URL
+  window.location.href = `salao.html?id=${salaoId}`;
 }
 
 function fecharModalAgendamento() {
@@ -160,15 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formAgendamento) {
     formAgendamento.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
+
       const data = document.getElementById("data-agendamento").value;
       const hora = document.getElementById("hora-agendamento").value;
-      
+
       if (!data || !hora) {
         alert("Por favor, selecione a data e a hora.");
         return;
       }
-      
+
       try {
         const resposta = await fetch(`${API_URL}/api/agendamentos`, {
           method: "POST",
