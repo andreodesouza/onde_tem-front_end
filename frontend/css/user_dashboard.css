@@ -11,6 +11,10 @@ body {
   height: 100%;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   background: #1e1e1e;
@@ -27,7 +31,6 @@ input {
   height: 100vh;
   min-height: 640px;
   background: #472969;
-  border: 4px solid #ff24bd;
   overflow: hidden;
 }
 
@@ -49,16 +52,55 @@ input {
   width: 100%;
 }
 
-.pin {
+.avatar {
+  position: relative;
   width: 92px;
-  height: 116px;
+  height: 122px;
+  border: none;
+  background: #c5c5c5;
+  color: #f4f4f4;
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
   filter: drop-shadow(0 8px 10px rgba(71, 41, 105, 0.18));
+  -webkit-mask: url("../assets/img/logo-pin-mask.png") center / 100% 100% no-repeat;
+  mask: url("../assets/img/logo-pin-mask.png") center / 100% 100% no-repeat;
 }
 
-.pin-svg {
+.avatar img {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
-  display: block;
+  object-fit: cover;
+  object-position: center 34%;
+}
+
+.avatar img[hidden],
+.avatar-vazio[hidden] {
+  display: none;
+}
+
+.avatar.tem-foto .avatar-vazio {
+  display: none !important;
+}
+
+.avatar-vazio {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  fill: #f4f4f4;
+}
+
+.avatar-grande {
+  width: 118px;
+  height: 157px;
+  flex-shrink: 0;
+  cursor: default;
+  filter: none;
 }
 
 .perfil-ola {
@@ -411,22 +453,166 @@ input {
   padding: 48px 24px;
 }
 
-.perfil-dados {
+.perfil-painel {
   display: grid;
-  gap: 18px;
+  gap: 28px;
   padding-bottom: 28px;
 }
 
-.perfil-dados span {
-  display: block;
-  font-size: 13px;
+.perfil-foto {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #e4dced;
+}
+
+.perfil-foto-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+.perfil-foto-acoes p {
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  color: #472969;
+}
+
+.btn-upload,
+.btn-remover-foto,
+.btn-trocar-senha,
+.btn-cancelar,
+.btn-salvar {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  background: #472969;
+  color: #fff;
+}
+
+.btn-upload:hover,
+.btn-salvar:hover {
+  filter: brightness(1.12);
+}
+
+.btn-remover-foto,
+.btn-cancelar {
+  border: 1px solid #d9d3e0;
+  background: #fff;
   color: #8c79a0;
 }
 
-.perfil-dados strong {
+.btn-remover-foto:hover,
+.btn-cancelar:hover {
+  color: #472969;
+  border-color: #472969;
+}
+
+.perfil-dados {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+}
+
+.perfil-dados dt {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8c79a0;
+}
+
+.perfil-dados dd {
+  margin: 2px 0 0;
   font-size: 18px;
   font-weight: 600;
   color: #472969;
+}
+
+.perfil-senha-linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.perfil-senha-linha span {
+  letter-spacing: 2px;
+}
+
+.btn-trocar-senha,
+.btn-salvar {
+  border: none;
+  background: #fddafe;
+  color: #ff24bd;
+}
+
+.btn-salvar {
+  background: #472969;
+  color: #fff;
+}
+
+.btn-trocar-senha:hover {
+  filter: brightness(0.97);
+}
+
+.form-senha {
+  display: grid;
+  gap: 14px;
+  max-width: 420px;
+  padding-top: 4px;
+}
+
+.form-senha h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #472969;
+}
+
+.form-senha label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #8c79a0;
+}
+
+.form-senha input {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #e4dced;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #472969;
+  outline: none;
+}
+
+.form-senha input:focus {
+  border-color: #472969;
+}
+
+.form-senha-msg {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2f8f62;
+}
+
+.form-senha-msg.is-erro {
+  color: #c4476a;
+}
+
+.form-senha-acoes {
+  display: flex;
+  gap: 10px;
 }
 
 .sugestoes {

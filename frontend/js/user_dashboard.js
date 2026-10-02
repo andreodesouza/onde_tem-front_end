@@ -95,6 +95,95 @@ function obterUsuario() {
     }
 }
 
+function chaveAvatar(usuario) {
+    const id = usuario && (usuario.email || usuario.id || usuario.nome);
+    return id ? `avatar_${id}` : "avatar_visitante";
+}
+
+function fotoSalva(usuario) {
+    return localStorage.getItem(chaveAvatar(usuario)) || (usuario && usuario.foto) || "";
+}
+
+function aplicarAvatar(foto) {
+    const temFoto = Boolean(foto);
+
+    [
+        ["btn-avatar", "avatar-img", "avatar-vazio"],
+        ["avatar-perfil", "avatar-perfil-img", "avatar-perfil-vazio"]
+    ].forEach(([caixaId, imgId, vazioId]) => {
+        const caixa = document.getElementById(caixaId);
+        const img = document.getElementById(imgId);
+        const vazio = document.getElementById(vazioId);
+
+        caixa.classList.toggle("tem-foto", temFoto);
+        vazio.hidden = temFoto;
+        vazio.style.display = temFoto ? "none" : "";
+
+        if (temFoto) {
+            img.src = foto;
+            img.hidden = false;
+        } else {
+            img.removeAttribute("src");
+            img.hidden = true;
+        }
+    });
+
+    document.getElementById("btn-remover-foto").hidden = !temFoto;
+}
+
+function salvarFoto(usuario, foto) {
+    const chave = chaveAvatar(usuario);
+    if (foto) localStorage.setItem(chave, foto);
+    else localStorage.removeItem(chave);
+
+    if (!usuario) return;
+    if (foto) usuario.foto = foto;
+    else delete usuario.foto;
+    localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+}
+
+function lerFotoArquivo(arquivo) {
+    return new Promise((resolve, reject) => {
+        if (!arquivo || !arquivo.type.startsWith("image/")) {
+            reject(new Error("Escolha um arquivo de imagem."));
+            return;
+        }
+
+        const leitor = new FileReader();
+        leitor.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        leitor.onload = () => {
+            const imagem = new Image();
+            imagem.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+            imagem.onload = () => {
+                const lado = 256;
+                const canvas = document.createElement("canvas");
+                canvas.width = lado;
+                canvas.height = lado;
+                const escala = Math.max(lado / imagem.width, lado / imagem.height);
+                const largura = imagem.width * escala;
+                const altura = imagem.height * escala;
+                canvas.getContext("2d").drawImage(
+                    imagem,
+                    (lado - largura) / 2,
+                    (lado - altura) / 2,
+                    largura,
+                    altura
+                );
+                resolve(canvas.toDataURL("image/jpeg", 0.85));
+            };
+            imagem.src = leitor.result;
+        };
+        leitor.readAsDataURL(arquivo);
+    });
+}
+
+function mostrarMensagemSenha(texto, erro) {
+    const msg = document.getElementById("form-senha-msg");
+    msg.textContent = texto;
+    msg.classList.toggle("is-erro", Boolean(erro));
+    msg.hidden = !texto;
+}
+
 function nomeExibicao(usuario) {
     if (!usuario) return "visitante";
     return usuario.nome || usuario.nome_fantasia || "visitante";
@@ -251,6 +340,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("agendamentos-nome").textContent = nome;
     document.getElementById("perfil-nome").textContent = nome === "visitante" ? "—" : nome;
     document.getElementById("perfil-email").textContent = usuario && usuario.email ? usuario.email : "—";
+    document.getElementById("perfil-telefone").textContent = usuario && usuario.telefone ? usuario.telefone : "—";
+    aplicarAvatar(fotoSalva(usuario));
 
     renderListas();
 
@@ -305,6 +396,81 @@ document.addEventListener("DOMContentLoaded", () => {
             mostrarView(botao.dataset.view);
             renderListas();
         });
+    });
+
+    document.getElementById("btn-avatar").addEventListener("click", () => {
+        mostrarView("perfil");
+    });
+
+    document.getElementById("input-foto").addEventListener("change", async (evento) => {
+        const arquivo = evento.target.files && evento.target.files[0];
+        evento.target.value = "";
+        if (!arquivo) return;
+
+        try {
+            const foto = await lerFotoArquivo(arquivo);
+            salvarFoto(usuario, foto);
+            aplicarAvatar(foto);
+        } catch (error) {
+            alert(error.message || "Não foi possível usar essa imagem.");
+        }
+    });
+
+    document.getElementById("btn-remover-foto").addEventListener("click", () => {
+        salvarFoto(usuario, "");
+        aplicarAvatar("");
+    });
+
+    const formSenha = document.getElementById("form-senha");
+
+    document.getElementById("btn-trocar-senha").addEventListener("click", () => {
+        formSenha.hidden = false;
+        mostrarMensagemSenha("");
+        document.getElementById("senha-atual").focus();
+    });
+
+    document.getElementById("btn-cancelar-senha").addEventListener("click", () => {
+        formSenha.reset();
+        formSenha.hidden = true;
+        mostrarMensagemSenha("");
+    });
+
+    formSenha.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+        const atual = document.getElementById("senha-atual").value;
+        const nova = document.getElementById("senha-nova").value;
+        const confirma = document.getElementById("senha-confirma").value;
+
+        if (nova.length < 6) {
+            mostrarMensagemSenha("A nova senha precisa ter pelo menos 6 caracteres.", true);
+            return;
+        }
+
+        if (nova !== confirma) {
+            mostrarMensagemSenha("A confirmação não é igual à nova senha.", true);
+            return;
+        }
+
+        if (nova === atual) {
+            mostrarMensagemSenha("Escolha uma senha diferente da atual.", true);
+            return;
+        }
+
+        if (!usuario) {
+            mostrarMensagemSenha("Entre na sua conta para trocar a senha.", true);
+            return;
+        }
+
+        if (usuario.senha && usuario.senha !== atual) {
+            mostrarMensagemSenha("A senha atual não confere.", true);
+            return;
+        }
+
+        usuario.senha = nova;
+        localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+        formSenha.reset();
+        formSenha.hidden = true;
+        mostrarMensagemSenha("Senha atualizada.");
     });
 
     document.getElementById("btn-sair").addEventListener("click", () => {
