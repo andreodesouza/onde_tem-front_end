@@ -95,7 +95,6 @@ function obterUsuario() {
     }
 }
 
-<<<<<<< HEAD
 function chaveAvatar(usuario) {
     const id = usuario && (usuario.email || usuario.id || usuario.nome);
     return id ? `avatar_${id}` : "avatar_visitante";
@@ -185,8 +184,6 @@ function mostrarMensagemSenha(texto, erro) {
     msg.hidden = !texto;
 }
 
-=======
->>>>>>> 7215bb6a71f70d3c95784e1082a1ed5e4fb8e3e9
 function nomeExibicao(usuario) {
     if (!usuario) return "visitante";
     return usuario.nome || usuario.nome_fantasia || "visitante";
@@ -343,11 +340,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("agendamentos-nome").textContent = nome;
     document.getElementById("perfil-nome").textContent = nome === "visitante" ? "—" : nome;
     document.getElementById("perfil-email").textContent = usuario && usuario.email ? usuario.email : "—";
-<<<<<<< HEAD
     document.getElementById("perfil-telefone").textContent = usuario && usuario.telefone ? usuario.telefone : "—";
     aplicarAvatar(fotoSalva(usuario));
-=======
->>>>>>> 7215bb6a71f70d3c95784e1082a1ed5e4fb8e3e9
 
     renderListas();
 
@@ -404,7 +398,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-<<<<<<< HEAD
     document.getElementById("btn-avatar").addEventListener("click", () => {
         mostrarView("perfil");
     });
@@ -480,8 +473,6 @@ document.addEventListener("DOMContentLoaded", () => {
         mostrarMensagemSenha("Senha atualizada.");
     });
 
-=======
->>>>>>> 7215bb6a71f70d3c95784e1082a1ed5e4fb8e3e9
     document.getElementById("btn-sair").addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("usuario_logado");

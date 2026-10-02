@@ -1,9 +1,5 @@
 backend/app/__pycache__/
 backend/db.sqlite3
-<<<<<<< HEAD
-=======
-backend/.env
->>>>>>> 7215bb6a71f70d3c95784e1082a1ed5e4fb8e3e9
 .cursor/
 .DS_Store
 Thumbs.db
