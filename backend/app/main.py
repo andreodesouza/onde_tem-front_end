@@ -21,7 +21,6 @@ app.add_middleware(
 )
 
 # --- SALÕES FICTÍCIOS ---
-# --- SALÕES FICTÍCIOS ---
 saloes_db = [
     {
         "id": "1",

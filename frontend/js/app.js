@@ -1,5 +1,3 @@
-// js/app.js
-
 const VAPID_PUBLIC_KEY = "SUA_CHAVE_VAPID_PUBLICA_AQUI";
 
 if ("serviceWorker" in navigator && "PushManager" in window) {
