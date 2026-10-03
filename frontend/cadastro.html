@@ -40,14 +40,21 @@
                                     required /></label>
                             <label class="field"><input type="email" id="cad-email-cliente" placeholder="E-mail"
                                     required /></label>
-                            <label class="field"><input type="password" id="cad-senha-cliente"
-                                    placeholder="Palavra-passe" required /></label>
+
+                            <label class="field">
+                                <input type="password" id="cad-senha-cliente" placeholder="Palavra-passe" required />
+                            </label>
+                            <small id="senha-feedback-cliente" class="senha-feedback"></small>
+
+                            <label class="field">
+                                <input type="password" id="cad-confirmar-senha-cliente"
+                                    placeholder="Confirmar palavra-passe" required />
+                            </label>
                         </div>
                     </div>
                     <button type="submit" class="btn-start">Concluir Cadastro</button>
                 </form>
 
-                <!-- Formulário de Cadastro de Empresa (Oculto por padrão) -->
                 <form class="login-framer" id="form-cad-empresa" style="display: none;">
                     <div class="buttons-login">
                         <div class="login-senha">
@@ -57,8 +64,16 @@
                                     placeholder="Razão Social ou Nome do Responsável" required /></label>
                             <label class="field"><input type="email" id="cad-email-empresa"
                                     placeholder="E-mail comercial" required /></label>
-                            <label class="field"><input type="password" id="cad-senha-empresa"
-                                    placeholder="Palavra-passe" required /></label>
+
+                            <label class="field">
+                                <input type="password" id="cad-senha-empresa" placeholder="Palavra-passe" required />
+                            </label>
+                            <small id="senha-feedback-empresa" class="senha-feedback"></small>
+
+                            <label class="field">
+                                <input type="password" id="cad-confirmar-senha-empresa"
+                                    placeholder="Confirmar palavra-passe" required />
+                            </label>
                         </div>
                     </div>
                     <button type="submit" class="btn-start">Cadastrar Empresa</button>
