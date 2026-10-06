@@ -1,8 +1,8 @@
 // js/login.js
 
 const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-    ? "http://127.0.0.1:8000"               // URL usada quando você testa localmente
-    : "https://onde-tem-back-end.onrender.com"; // URL usada quando o site estiver no ar (ex: Vercel/Render)
+    ? "http://127.0.0.1:8000"
+    : "https://onde-tem-back-end.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
     const formLogin = document.getElementById("form-login");
@@ -30,15 +30,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const resultado = await resposta.json();
 
             if (resposta.ok) {
-                // Guarda os dados e o token da sessão
+                // Guarda os dados e o token da sessão de forma unificada
                 localStorage.setItem("token", resultado.token);
+                localStorage.setItem("usuarioLogado", JSON.stringify(resultado.usuario));
                 localStorage.setItem("usuario_logado", JSON.stringify(resultado.usuario));
 
-                // Redireciona com base no tipo retornado pelo back-end
+                // REDIRECIONAMENTO CONDICIONAL:
                 if (resultado.usuario.tipo === "empresa") {
+                    // Empresa vai direto para o painel do salão
                     window.location.href = "salao_dashboard.html";
                 } else {
-                    window.location.href = "user_dashboard.html";
+                    // Cliente regressa à página inicial (index.html) para ver a cascata no cabeçalho
+                    window.location.href = "index.html";
                 }
             } else {
                 alert(resultado.detail || "E-mail ou palavra-passe incorretos.");

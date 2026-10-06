@@ -235,9 +235,92 @@ body {
   opacity: 0.9;
 }
 
+/* Estilos para o Menu em Cascata do Utilizador no Header */
+.user-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-user-dropdown {
+  background: #f0edf9;
+  color: #553a73;
+  border: 1px solid #dcd6f7;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.btn-user-dropdown:hover {
+  background: #e2dcf8;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background-color: #ffffff;
+  min-width: 210px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 99999;
+  animation: fadeInDropdown 0.2s ease;
+}
+
+.dropdown-content.show {
+  display: block !important;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  color: #2d3748;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background-color: #f7fafc;
+  color: #553a73;
+}
+
+.dropdown-content hr {
+  border: none;
+  border-top: 1px solid #edf2f7;
+  margin: 0;
+}
+
+@keyframes fadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 900px) {
 
-  /* Impede que qualquer elemento vaze para fora da largura do ecrã */
   html,
   body {
     max-width: 100% !important;
@@ -277,7 +360,6 @@ body {
     width: 100% !important;
   }
 
-  /* Contém o scroll horizontal restrito estritamente a este bloco */
   .grid-cards {
     display: flex !important;
     flex-direction: row !important;
@@ -290,7 +372,6 @@ body {
     width: 100% !important;
     box-sizing: border-box !important;
     scroll-snap-type: x mandatory !important;
-    /* Garante que o scroll do carrossel é suave e não afeta o exterior */
     -webkit-overflow-scrolling: touch;
   }
 
@@ -298,10 +379,8 @@ body {
     display: none !important;
   }
 
-  /* Ajuste seguro para o cartão não estourar a largura da tela */
   .grid-cards .card-salao {
     flex: 0 0 85% !important;
-    /* Usa percentagem em vez de vw para evitar saltos de scroll geral */
     width: 85% !important;
     min-width: 85% !important;
     max-width: 360px !important;
