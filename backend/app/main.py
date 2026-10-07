@@ -112,7 +112,7 @@ import resend
 import os
 
 # Configura a chave da API do Resend (pode colocar diretamente ou puxar do .env)
-resend.api_key = os.getenv("RESEND_API_KEY", "re_bxTge4MS_71P1cdu8Gz32aQyMYuwSqHUf")
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 # --- FUNÇÃO DE E-MAIL COM RESEND ---
 def enviar_email_codigo(email_destino: str, codigo: str):
