@@ -2,8 +2,9 @@ import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from dotenv import load_dotenv
-load_dotenv()
+
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
 
 # Importa da própria estrutura do app
 from .database import engine, Base, get_db
@@ -110,33 +111,44 @@ saloes_db = [
     }
 ]
 
-import resend
-import os
 
-# Configura a chave da API do Resend (pode colocar diretamente ou puxar do .env)
-resend.api_key = os.getenv("RESEND_API_KEY")
 
-# --- FUNÇÃO DE E-MAIL COM RESEND ---
+# --- FUNÇÃO DE E-MAIL COM BREVO ---
 def enviar_email_codigo(email_destino: str, codigo: str):
+    # Configura a autenticação com a chave de API do Brevo
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = "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"
+
+    # Cria uma instância da API de transacção
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
+    # Define os detalhes do e-mail
+    subject = "Código de Ativação — Onde Tem?"
+    html_content = f"""
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <h2>Bem-vindo(a) ao Onde Tem?</h2>
+            <p>O seu código de ativação de 6 dígitos é:</p>
+            <h1 style="color: #553a73; letter-spacing: 4px;">{codigo}</h1>
+            <p>Introduza este código na aplicação para ativar a sua conta.</p>
+        </div>
+    """
+    
+    # Use o seu e-mail real verificado no Brevo
+    sender = {"name": "Onde Tem", "email": "andreodesouza2@gmail.com"}
+    to = [{"email": email_destino}]
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=to,
+        html_content=html_content,
+        sender=sender,
+        subject=subject
+    )
+
     try:
-        params = {
-            "from": "Onde Tem? <onboarding@resend.dev>", # Nota: em produção com domínio próprio, altera para o teu remetente
-            "to": [email_destino],
-            "subject": "Código de Ativação — Onde Tem?",
-            "html": f"""
-                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                    <h2>Bem-vindo(a) ao Onde Tem?</h2>
-                    <p>O seu código de ativação de 6 dígitos é:</p>
-                    <h1 style="color: #553a73; letter-spacing: 4px;">{codigo}</h1>
-                    <p>Introduza este código na aplicação para ativar a sua conta.</p>
-                </div>
-            """,
-        }
-        
-        resposta = resend.Emails.send(params)
-        print(f"E-mail real enviado com sucesso para {email_destino}. ID: {resposta.get('id')}")
-    except Exception as e:
-        print(f"Erro ao enviar e-mail via Resend: {e}")
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        print(f"E-mail enviado com sucesso via Brevo para {email_destino}. ID: {api_response.message_id}")
+    except ApiException as e:
+        print(f"Erro ao enviar e-mail via Brevo: {e}")
 
 # --- ROTAS DA API ---
 
