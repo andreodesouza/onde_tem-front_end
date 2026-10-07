@@ -19,7 +19,7 @@
 
         <section class="square">
             <div class="square-inner">
-                <header class="header">
+                <header class="header" id="header-cadastro">
                     <div class="logo">
                         <img src="assets/img/logo.png" alt="ONDE TEM" />
                     </div>
@@ -55,6 +55,7 @@
                     <button type="submit" class="btn-start">Concluir Cadastro</button>
                 </form>
 
+                <!-- Formulário de Cadastro de Empresa -->
                 <form class="login-framer" id="form-cad-empresa" style="display: none;">
                     <div class="buttons-login">
                         <div class="login-senha">
@@ -79,7 +80,23 @@
                     <button type="submit" class="btn-start">Cadastrar Empresa</button>
                 </form>
 
-                <a class="btn-cadastrar" href="login.html">
+                <!-- Painel de Ativação por Código (Incialmente Oculto) -->
+                <div id="painel-ativacao" style="display: none; text-align: center; color: #fff; width: 100%;">
+                    <h2>Confirme o seu e-mail</h2>
+                    <p style="font-size: 0.9rem; margin: 10px 0 20px;">Enviámos um código de 6 dígitos para o seu
+                        e-mail. Insira-o abaixo para ativar a conta.</p>
+
+                    <form id="form-ativacao" style="display: flex; flex-direction: column; gap: 14px;">
+                        <label class="field">
+                            <input type="text" id="codigo-ativacao" placeholder="Código de 6 dígitos" maxlength="6"
+                                required
+                                style="text-align: center; font-size: 1.2rem; letter-spacing: 4px; color: #fff;" />
+                        </label>
+                        <button type="submit" class="btn-start">Ativar Conta</button>
+                    </form>
+                </div>
+
+                <a class="btn-cadastrar" href="login.html" id="link-ir-login">
                     <span>Já tem conta? <strong>Entrar</strong></span>
                 </a>
             </div>

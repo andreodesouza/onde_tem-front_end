@@ -1,3 +1,4 @@
+import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -5,7 +6,7 @@ from sqlalchemy.orm import Session
 # Importa da própria estrutura do app
 from .database import engine, Base, get_db
 from .models import UsuarioModel
-from .schemas import UsuarioCadastro, UsuarioLogin
+from .schemas import UsuarioCadastro, UsuarioLogin, AtivacaoConta
 
 # Cria as tabelas automaticamente se não existirem
 Base.metadata.create_all(bind=engine)
@@ -107,6 +108,34 @@ saloes_db = [
     }
 ]
 
+import resend
+import os
+
+# Configura a chave da API do Resend (pode colocar diretamente ou puxar do .env)
+resend.api_key = os.getenv("RESEND_API_KEY", "re_bxTge4MS_71P1cdu8Gz32aQyMYuwSqHUf")
+
+# --- FUNÇÃO DE E-MAIL COM RESEND ---
+def enviar_email_codigo(email_destino: str, codigo: str):
+    try:
+        params = {
+            "from": "Onde Tem? <onboarding@resend.dev>", # Nota: em produção com domínio próprio, altera para o teu remetente
+            "to": [email_destino],
+            "subject": "Código de Ativação — Onde Tem?",
+            "html": f"""
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2>Bem-vindo(a) ao Onde Tem?</h2>
+                    <p>O seu código de ativação de 6 dígitos é:</p>
+                    <h1 style="color: #553a73; letter-spacing: 4px;">{codigo}</h1>
+                    <p>Introduza este código na aplicação para ativar a sua conta.</p>
+                </div>
+            """,
+        }
+        
+        resposta = resend.Emails.send(params)
+        print(f"E-mail real enviado com sucesso para {email_destino}. ID: {resposta.get('id')}")
+    except Exception as e:
+        print(f"Erro ao enviar e-mail via Resend: {e}")
+
 # --- ROTAS DA API ---
 
 @app.post("/api/cadastro", status_code=status.HTTP_201_CREATED)
@@ -121,6 +150,9 @@ def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)
             detail="Este e-mail já está registado."
         )
     
+    # Gera um código aleatório de 6 dígitos
+    codigo_gerado = f"{random.randint(100000, 999999)}"
+    
     novo_usuario = UsuarioModel(
         email=email_limpo,
         senha=usuario.senha,
@@ -128,14 +160,44 @@ def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)
         nome=usuario.nome,
         telefone=usuario.telefone,
         nome_fantasia=usuario.nome_fantasia,
-        razao_social=usuario.razao_social
+        razao_social=usuario.razao_social,
+        codigo_ativacao=codigo_gerado,
+        ativo=False
     )
     
     db.add(novo_usuario)
     db.commit()
     db.refresh(novo_usuario)
     
-    return {"mensagem": "Registo efetuado com sucesso!"}
+    # Dispara o envio do e-mail com o código
+    enviar_email_codigo(email_limpo, codigo_gerado)
+    
+    return {
+        "mensagem": "Registo efetuado com sucesso! Verifique o seu e-mail para obter o código de ativação.",
+        "email": email_limpo
+    }
+
+@app.post("/api/ativar")
+def ativar_conta(dados: AtivacaoConta, db: Session = Depends(get_db)):
+    email_limpo = dados.email.lower().strip()
+    codigo_limpo = dados.codigo.strip()
+    
+    usuario = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
+    
+    if not usuario:
+        raise HTTPException(status_code=404, detail="Utilizador não encontrado.")
+        
+    if usuario.ativo:
+        return {"mensagem": "Esta conta já se encontra ativa."}
+        
+    if usuario.codigo_ativacao != codigo_limpo:
+        raise HTTPException(status_code=400, detail="Código de ativação incorreto.")
+        
+    usuario.ativo = True
+    usuario.codigo_ativacao = None  # Limpa o código após ser validado com sucesso
+    db.commit()
+    
+    return {"mensagem": "Conta ativada com sucesso! Já pode fazer login."}
 
 @app.post("/api/login")
 def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
@@ -150,6 +212,13 @@ def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="E-mail ou palavra-passe incorretos."
+        )
+        
+    # Bloqueia o login caso a conta ainda não tenha sido ativada via código
+    if not usuario.ativo:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, 
+            detail="Conta não ativada. Por favor, insira o código enviado por e-mail."
         )
         
     return {

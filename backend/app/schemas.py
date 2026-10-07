@@ -13,3 +13,7 @@ class UsuarioCadastro(BaseModel):
 class UsuarioLogin(BaseModel):
     email: str
     senha: str
+
+class AtivacaoConta(BaseModel):
+    email: str
+    codigo: str    

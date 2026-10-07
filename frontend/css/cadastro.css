@@ -216,3 +216,56 @@ body {
 .btn-cadastrar:hover {
     opacity: 1;
 }
+
+/* --- POP-UP / NOTIFICAÇÃO PERSONALIZADA --- */
+.custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ffffff;
+    color: #2d3748;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 5px solid #553a73;
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-toast.sucesso {
+    border-left-color: #25d366;
+}
+
+.custom-toast.erro {
+    border-left-color: #e53e3e;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
