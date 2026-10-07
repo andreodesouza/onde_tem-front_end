@@ -1,3 +1,8 @@
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
+
 import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -111,13 +116,11 @@ saloes_db = [
     }
 ]
 
-
-
 # --- FUNÇÃO DE E-MAIL COM BREVO ---
 def enviar_email_codigo(email_destino: str, codigo: str):
     # Configura a autenticação com a chave de API do Brevo
     configuration = sib_api_v3_sdk.Configuration()
-    configuration.api_key['api-key'] = "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"
+    configuration.api_key['api-key'] = os.getenv("API_KEY_BREVO")
 
     # Cria uma instância da API de transacção
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
