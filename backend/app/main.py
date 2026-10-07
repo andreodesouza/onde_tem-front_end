@@ -2,6 +2,8 @@ import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from dotenv import load_dotenv
+load_dotenv()
 
 # Importa da própria estrutura do app
 from .database import engine, Base, get_db
