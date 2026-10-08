@@ -41,6 +41,30 @@ document.addEventListener("DOMContentLoaded", () => {
     ativarValidacaoEmTempoReal("cliente");
     ativarValidacaoEmTempoReal("empresa");
 
+    function selecionarTipo(tipo) {
+        tipoSelecionado = tipo;
+        const empresa = tipo === "empresa";
+        btnCliente.classList.toggle("active", !empresa);
+        btnEmpresa.classList.toggle("active", empresa);
+        formCliente.style.display = empresa ? "none" : "flex";
+        formEmpresa.style.display = empresa ? "flex" : "none";
+    }
+
+    btnCliente.addEventListener("click", () => selecionarTipo("cliente"));
+    btnEmpresa.addEventListener("click", () => selecionarTipo("empresa"));
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tipo") === "empresa") {
+        selecionarTipo("empresa");
+        const fantasia = document.getElementById("cad-fantasia");
+        const responsavel = document.getElementById("cad-razao");
+        const emailEmpresa = document.getElementById("cad-email-empresa");
+        if (params.get("fantasia")) fantasia.value = params.get("fantasia");
+        if (params.get("responsavel")) responsavel.value = params.get("responsavel");
+        if (params.get("email")) emailEmpresa.value = params.get("email");
+    } else if (params.get("tipo") === "cliente") {
+        selecionarTipo("cliente");
+    }
     btnCliente.addEventListener("click", () => {
         btnCliente.classList.add("active");
         btnEmpresa.classList.remove("active");
