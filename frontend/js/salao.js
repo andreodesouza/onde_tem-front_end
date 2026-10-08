@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!salaoId) {
     alert("Nenhum salão selecionado!");
-    window.location.href = "index.html";
+    window.location.href = "app.html";
     return;
   }
 

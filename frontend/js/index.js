@@ -193,7 +193,7 @@ function verificarEstadoLoginHeader() {
       localStorage.removeItem('usuario_logado');
       localStorage.removeItem('usuarioLogado');
       sessionStorage.removeItem('usuarioLogado');
-      window.location.href = 'index.html';
+      window.location.href = 'app.html';
     });
   }
 }

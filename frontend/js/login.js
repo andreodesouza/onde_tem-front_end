@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Empresa vai direto para o painel do salão
                     window.location.href = "salao_dashboard.html";
                 } else {
-                    // Cliente regressa à página inicial (index.html) para ver a cascata no cabeçalho
-                    window.location.href = "index.html";
+                    // Cliente regressa à página inicial (app.html) para ver a cascata no cabeçalho
+                    window.location.href = "app.html";
                 }
             } else {
                 alert(resultado.detail || "E-mail ou palavra-passe incorretos.");
