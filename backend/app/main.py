@@ -134,6 +134,38 @@ def enviar_email_codigo(email_destino: str, codigo: str):
 
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
+    subject = "Código de Ativação — Onde Tem?"
+    html_content = f"""
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <h2>Bem-vindo(a) ao Onde Tem?</h2>
+            <p>O seu código de ativação de 6 dígitos é:</p>
+            <h1 style="color: #553a73; letter-spacing: 4px;">{codigo}</h1>
+            <p>Introduza este código na aplicação para ativar a sua conta.</p>
+        </div>
+    """
+    
+    sender = {"name": "Onde Tem", "email": "andreodesouza2@gmail.com"}
+    to = [{"email": email_destino}]
+
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=to,
+        html_content=html_content,
+        sender=sender,
+        subject=subject
+    )
+
+    try:
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        print(f"E-mail enviado com sucesso via Brevo para {email_destino}. ID: {api_response.message_id}")
+    except ApiException as e:
+        print(f"Erro ao enviar e-mail via Brevo: {e}")
+
+def enviar_email_codigo_recuperacao(email_destino: str, codigo: str):
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = os.getenv("API_KEY_BREVO")
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+
     subject = "Código de Recuperação — Onde Tem?"
     html_content = f"""
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
@@ -158,7 +190,7 @@ def enviar_email_codigo(email_destino: str, codigo: str):
         api_response = api_instance.send_transac_email(send_smtp_email)
         print(f"E-mail enviado com sucesso via Brevo para {email_destino}. ID: {api_response.message_id}")
     except ApiException as e:
-        print(f"Erro ao enviar e-mail via Brevo: {e}")
+        print(f"Erro ao enviar e-mail via Brevo: {e}")        
 
 # --- ROTAS DA API ---
 
@@ -264,7 +296,7 @@ def solicitar_recuperacao(dados: SolicitarRecuperacaoSchema, db: Session = Depen
     db.commit()
     
     try:
-        enviar_email_codigo(email_limpo, codigo_recuperacao)
+        enviar_email_codigo_recuperacao(email_limpo, codigo_recuperacao)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
