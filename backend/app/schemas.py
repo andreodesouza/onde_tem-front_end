@@ -8,7 +8,7 @@ class UsuarioCadastro(BaseModel):
     razao_social: Optional[str] = None
     email: str
     senha: str
-    tipo: str  # "cliente" ou "empresa"
+    tipo: str  
 
 class UsuarioLogin(BaseModel):
     email: str

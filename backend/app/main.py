@@ -1,30 +1,18 @@
+import bcrypt
 import os
-
 from dotenv import load_dotenv
 load_dotenv()
-
 import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
-
 # Importa da própria estrutura do app
 from .database import engine, Base, get_db
 from .models import UsuarioModel
-from .schemas import UsuarioCadastro, UsuarioLogin, AtivacaoConta
-
-# --- SCHEMAS PENDENTES PARA RECUPERAÇÃO DE SENHA ---
-class SolicitarRecuperacaoSchema(BaseModel):
-    email: str
-
-class RedefinirSenhaSchema(BaseModel):
-    email: str
-    codigo: str
-    nova_senha: str
+from .schemas import UsuarioCadastro, UsuarioLogin, AtivacaoConta, SolicitarRecuperacaoSchema, RedefinirSenhaSchema
 
 # Cria as tabelas automaticamente se não existirem
 Base.metadata.create_all(bind=engine)
@@ -126,6 +114,19 @@ saloes_db = [
     }
 ]
 
+def hash_senha(senha: str) -> str:
+    # Converte a senha para bytes, gera o salt e faz o hash (trunca com segurança nos 72 bytes)
+    senha_bytes = senha.encode('utf-8')[:72]
+    hashed = bcrypt.hashpw(senha_bytes, bcrypt.gensalt())
+    return hashed.decode('utf-8')
+
+def verificar_senha(senha_plain: str, senha_hash: str) -> bool:
+    try:
+        senha_bytes = senha_plain.encode('utf-8')[:72]
+        return bcrypt.checkpw(senha_bytes, senha_hash.encode('utf-8'))
+    except Exception:
+        return False
+
 # --- FUNÇÃO DE E-MAIL COM BREVO ---
 def enviar_email_codigo(email_destino: str, codigo: str):
     configuration = sib_api_v3_sdk.Configuration()
@@ -176,7 +177,7 @@ def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)
     
     novo_usuario = UsuarioModel(
         email=email_limpo,
-        senha=usuario.senha,
+        senha=hash_senha(usuario.senha),
         tipo=usuario.tipo,
         nome=usuario.nome,
         telefone=usuario.telefone,
@@ -223,12 +224,10 @@ def ativar_conta(dados: AtivacaoConta, db: Session = Depends(get_db)):
 def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
     email_limpo = dados.email.lower().strip()
     
-    usuario = db.query(UsuarioModel).filter(
-        UsuarioModel.email == email_limpo,
-        UsuarioModel.senha == dados.senha
-    ).first()
+    usuario = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
     
-    if not usuario:
+    # Valida se o utilizador existe e se a senha corresponde ao hash guardado
+    if not usuario or not verificar_senha(dados.senha, usuario.senha):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, 
             detail="E-mail ou palavra-passe incorretos."
@@ -296,7 +295,8 @@ def redefinir_senha(dados: RedefinirSenhaSchema, db: Session = Depends(get_db)):
             detail="Código de recuperação inválido ou expirado."
         )
         
-    usuario.senha = dados.nova_senha
+    # Atualiza a senha encriptando a nova palavra-passe
+    usuario.senha = hash_senha(dados.nova_senha)
     usuario.codigo_ativacao = None
     db.commit()
     
