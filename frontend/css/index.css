@@ -66,6 +66,13 @@ body {
   cursor: pointer;
 }
 
+.link-landing {
+  color: #553a73;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .btn-login-header {
   background: #553a73;
   color: #fff;
@@ -264,7 +271,8 @@ body {
     height: 400px !important;
   }
 
-  .logo-texto {
+  .logo-texto,
+  .link-landing {
     display: none !important;
   }
 

@@ -12,22 +12,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let tipoSelecionado = "cliente";
 
-    // Alternar abas visualmente
-    btnCliente.addEventListener("click", () => {
-        tipoSelecionado = "cliente";
-        btnCliente.classList.add("active");
-        btnEmpresa.classList.remove("active");
-        formCliente.style.display = "flex";
-        formEmpresa.style.display = "none";
-    });
+    function selecionarTipo(tipo) {
+        tipoSelecionado = tipo;
+        const empresa = tipo === "empresa";
+        btnCliente.classList.toggle("active", !empresa);
+        btnEmpresa.classList.toggle("active", empresa);
+        formCliente.style.display = empresa ? "none" : "flex";
+        formEmpresa.style.display = empresa ? "flex" : "none";
+    }
 
-    btnEmpresa.addEventListener("click", () => {
-        tipoSelecionado = "empresa";
-        btnEmpresa.classList.add("active");
-        btnCliente.classList.remove("active");
-        formEmpresa.style.display = "flex";
-        formCliente.style.display = "none";
-    });
+    btnCliente.addEventListener("click", () => selecionarTipo("cliente"));
+    btnEmpresa.addEventListener("click", () => selecionarTipo("empresa"));
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tipo") === "empresa") {
+        selecionarTipo("empresa");
+        const fantasia = document.getElementById("cad-fantasia");
+        const responsavel = document.getElementById("cad-razao");
+        const emailEmpresa = document.getElementById("cad-email-empresa");
+        if (params.get("fantasia")) fantasia.value = params.get("fantasia");
+        if (params.get("responsavel")) responsavel.value = params.get("responsavel");
+        if (params.get("email")) emailEmpresa.value = params.get("email");
+    } else if (params.get("tipo") === "cliente") {
+        selecionarTipo("cliente");
+    }
 
     // Enviar Cadastro de Cliente
     formCliente.addEventListener("submit", async (e) => {
