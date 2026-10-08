@@ -1,0 +1,286 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #553a73;
+    font-family: "Poppins", sans-serif;
+}
+
+.tela-login {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #553a73;
+}
+
+.background {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.background img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.square {
+    position: relative;
+    width: 440px;
+    max-width: 90vw;
+    max-height: 95vh;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background-image: linear-gradient(145.726deg,
+            rgba(255, 255, 255, 0.2) 1.8156%,
+            rgba(153, 153, 153, 0.1) 98.577%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.square-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.header h1 {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.login-framer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+}
+
+.buttons-login {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.login-senha {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: border-color 0.2s;
+}
+
+.field:focus-within {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.field input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #ffffff;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.95rem;
+}
+
+.field input::placeholder {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.btn-start {
+    width: 100%;
+    height: 48px;
+    border: 0;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #553a73;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 5px;
+}
+
+.btn-start:hover {
+    opacity: 0.95;
+    transform: translateY(-1px);
+}
+
+.btn-cadastrar {
+    margin-top: 16px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    text-align: center;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.btn-cadastrar:hover {
+    opacity: 1;
+}
+
+/* --- POP-UP / NOTIFICAÇÃO PERSONALIZADA --- */
+.custom-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ffffff;
+    color: #2d3748;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 5px solid #553a73;
+    animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.custom-toast.sucesso {
+    border-left-color: #25d366;
+}
+
+.custom-toast.erro {
+    border-left-color: #e53e3e;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+}
+
+/* Controla a ocultação/exibição do painel de ativação */
+.painel-ativacao-oculto {
+    display: none;
+    width: 100%;
+}
+
+.header-painel {
+    margin-bottom: 15px;
+}
+
+.header-painel h2 {
+    color: #fff;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.header-painel p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    margin-top: 5px;
+}
+
+.form-redefinicao-interno {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.input-codigo {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    color: #fff;
+}
+
+.senha-feedback {
+    font-size: 0.8rem;
+    text-align: left;
+    width: 100%;
+    margin-top: -8px;
+    margin-bottom: -4px;
+    font-family: "Poppins", sans-serif;
+}
