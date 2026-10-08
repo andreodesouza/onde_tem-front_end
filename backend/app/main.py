@@ -7,6 +7,7 @@ import random
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
@@ -15,6 +16,15 @@ from sib_api_v3_sdk.rest import ApiException
 from .database import engine, Base, get_db
 from .models import UsuarioModel
 from .schemas import UsuarioCadastro, UsuarioLogin, AtivacaoConta
+
+# --- SCHEMAS PENDENTES PARA RECUPERAÇÃO DE SENHA ---
+class SolicitarRecuperacaoSchema(BaseModel):
+    email: str
+
+class RedefinirSenhaSchema(BaseModel):
+    email: str
+    codigo: str
+    nova_senha: str
 
 # Cria as tabelas automaticamente se não existirem
 Base.metadata.create_all(bind=engine)
@@ -118,25 +128,21 @@ saloes_db = [
 
 # --- FUNÇÃO DE E-MAIL COM BREVO ---
 def enviar_email_codigo(email_destino: str, codigo: str):
-    # Configura a autenticação com a chave de API do Brevo
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = os.getenv("API_KEY_BREVO")
 
-    # Cria uma instância da API de transacção
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
-    # Define os detalhes do e-mail
-    subject = "Código de Ativação — Onde Tem?"
+    subject = "Código de Recuperação — Onde Tem?"
     html_content = f"""
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-            <h2>Bem-vindo(a) ao Onde Tem?</h2>
-            <p>O seu código de ativação de 6 dígitos é:</p>
+            <h2>Redefinição de Senha — Onde Tem?</h2>
+            <p>O seu código de verificação de 6 dígitos é:</p>
             <h1 style="color: #553a73; letter-spacing: 4px;">{codigo}</h1>
-            <p>Introduza este código na aplicação para ativar a sua conta.</p>
+            <p>Introduza este código na aplicação para prosseguir com a redefinição da palavra-passe.</p>
         </div>
     """
     
-    # Use o seu e-mail real verificado no Brevo
     sender = {"name": "Onde Tem", "email": "andreodesouza2@gmail.com"}
     to = [{"email": email_destino}]
 
@@ -159,7 +165,6 @@ def enviar_email_codigo(email_destino: str, codigo: str):
 def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)):
     email_limpo = usuario.email.lower().strip()
     
-    # Verifica se já existe no PostgreSQL
     existente = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
     if existente:
         raise HTTPException(
@@ -167,7 +172,6 @@ def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)
             detail="Este e-mail já está registado."
         )
     
-    # Gera um código aleatório de 6 dígitos
     codigo_gerado = f"{random.randint(100000, 999999)}"
     
     novo_usuario = UsuarioModel(
@@ -186,7 +190,6 @@ def cadastrar_utilizador(usuario: UsuarioCadastro, db: Session = Depends(get_db)
     db.commit()
     db.refresh(novo_usuario)
     
-    # Dispara o envio do e-mail com o código
     enviar_email_codigo(email_limpo, codigo_gerado)
     
     return {
@@ -211,7 +214,7 @@ def ativar_conta(dados: AtivacaoConta, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Código de ativação incorreto.")
         
     usuario.ativo = True
-    usuario.codigo_ativacao = None  # Limpa o código após ser validado com sucesso
+    usuario.codigo_ativacao = None  
     db.commit()
     
     return {"mensagem": "Conta ativada com sucesso! Já pode fazer login."}
@@ -231,7 +234,6 @@ def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
             detail="E-mail ou palavra-passe incorretos."
         )
         
-    # Bloqueia o login caso a conta ainda não tenha sido ativada via código
     if not usuario.ativo:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, 
@@ -246,6 +248,59 @@ def efetuar_login(dados: UsuarioLogin, db: Session = Depends(get_db)):
             "tipo": usuario.tipo
         }
     }
+
+@app.post("/api/solicitar-recuperacao")
+def solicitar_recuperacao(dados: SolicitarRecuperacaoSchema, db: Session = Depends(get_db)):
+    email_limpo = dados.email.lower().strip()
+    
+    usuario = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
+    if not usuario:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="E-mail não encontrado."
+        )
+    
+    codigo_recuperacao = f"{random.randint(100000, 999999)}"
+    usuario.codigo_ativacao = codigo_recuperacao
+    db.commit()
+    
+    try:
+        enviar_email_codigo(email_limpo, codigo_recuperacao)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
+            detail="Erro ao enviar e-mail de recuperação."
+        )
+        
+    return {
+        "mensagem": "Código de recuperação enviado com sucesso para o seu e-mail!",
+        "email": email_limpo
+    }
+
+@app.post("/api/redefinir-senha")
+def redefinir_senha(dados: RedefinirSenhaSchema, db: Session = Depends(get_db)):
+    email_limpo = dados.email.lower().strip()
+    codigo_limpo = dados.codigo.strip()
+    
+    usuario = db.query(UsuarioModel).filter(UsuarioModel.email == email_limpo).first()
+    
+    if not usuario:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Utilizador não encontrado."
+        )
+        
+    if not usuario.codigo_ativacao or usuario.codigo_ativacao != codigo_limpo:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, 
+            detail="Código de recuperação inválido ou expirado."
+        )
+        
+    usuario.senha = dados.nova_senha
+    usuario.codigo_ativacao = None
+    db.commit()
+    
+    return {"mensagem": "Senha redefinida com sucesso! Já pode fazer login com a nova senha."}
 
 # --- ROTA PARA LISTAR TODOS OS SALÕES ---
 @app.get("/api/saloes")

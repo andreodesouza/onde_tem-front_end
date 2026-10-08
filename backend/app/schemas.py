@@ -17,3 +17,11 @@ class UsuarioLogin(BaseModel):
 class AtivacaoConta(BaseModel):
     email: str
     codigo: str    
+
+class SolicitarRecuperacaoSchema(BaseModel):
+    email: str
+
+class RedefinirSenhaSchema(BaseModel):
+    email: str
+    codigo: str
+    nova_senha: str    
