@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String
 from .database import Base
 
 class UsuarioModel(Base):
@@ -12,3 +12,5 @@ class UsuarioModel(Base):
     telefone = Column(String, nullable=True)
     nome_fantasia = Column(String, nullable=True)
     razao_social = Column(String, nullable=True)
+    codigo_ativacao = Column(String, nullable=True)
+    ativo = Column(Boolean, default=False, nullable=False)

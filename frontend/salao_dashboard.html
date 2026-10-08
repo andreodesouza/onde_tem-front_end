@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/salao_dashboard.css">
 </head>
+
 <body>
+
     <!-- Topbar Oficial Onde Tem? -->
     <header class="navbar-app">
         <div class="navbar-left">
             <button class="btn-back" onclick="history.back()" title="Voltar">←</button>
             <div class="brand">
-                <img src="assets/img/Logo-png 5.svg" alt="Onde Tem?" class="brand-logo" onerror="this.style.display='none'">
+                <img src="assets/img/Logo-png 5.svg" alt="Onde Tem?" class="brand-logo"
+                    onerror="this.style.display='none'">
                 <span class="brand-name">Onde tem?</span>
             </div>
         </div>
@@ -31,6 +35,12 @@
             <button class="btn-logout" onclick="fazerLogout()" title="Encerrar sessão">Sair</button>
         </div>
     </header>
+
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+    <main class="dashboard-main-content">
+        <!-- Aqui continuam os seus Cards de Métricas e as <section> de agendamentos, serviços e profissionais -->
+    </main>
+    </div>
 
     <main class="dashboard-container">
         <!-- Banner de Contexto do Salão -->
@@ -99,31 +109,49 @@
 
             <!-- Formulário de Cadastro de Serviço -->
             <div style="padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--border-light);">
-                <form id="form-servico" onsubmit="salvarServico(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
+                <form id="form-servico" onsubmit="salvarServico(event)"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
                     <div>
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Nome do Serviço</label>
-                        <input type="text" id="serv-nome" placeholder="Ex: Mechas & Hidratação" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Nome
+                            do Serviço</label>
+                        <input type="text" id="serv-nome" placeholder="Ex: Mechas & Hidratação" required
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div>
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Preço (R$)</label>
-                        <input type="number" id="serv-preco" step="0.01" placeholder="180.00" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Preço
+                            (R$)</label>
+                        <input type="number" id="serv-preco" step="0.01" placeholder="180.00" required
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div>
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Duração (minutos)</label>
-                        <input type="number" id="serv-duracao" placeholder="90" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Duração
+                            (minutos)</label>
+                        <input type="number" id="serv-duracao" placeholder="90" required
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div>
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Profissional Responsável</label>
-                        <select id="serv-profissional" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px; background-color: #fff;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Profissional
+                            Responsável</label>
+                        <select id="serv-profissional"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px; background-color: #fff;">
                             <option value="">Selecione...</option>
                         </select>
                     </div>
                     <div style="grid-column: 1 / -1;">
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Descrição (Opcional)</label>
-                        <input type="text" id="serv-descricao" placeholder="Ex: Clareamento suave com nutrição profunda dos fios." style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Descrição
+                            (Opcional)</label>
+                        <input type="text" id="serv-descricao"
+                            placeholder="Ex: Clareamento suave com nutrição profunda dos fios."
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
-                        <button type="submit" class="btn-login-profile" style="height: 40px; padding: 0 1.5rem;">+ Cadastrar Serviço</button>
+                        <button type="submit" class="btn-login-profile" style="height: 40px; padding: 0 1.5rem;">+
+                            Cadastrar Serviço</button>
                     </div>
                 </form>
             </div>
@@ -158,20 +186,29 @@
 
             <!-- Formulário de Cadastro -->
             <div style="padding: 1.5rem 1.8rem; border-bottom: 1px solid var(--border-light);">
-                <form id="form-profissional" onsubmit="salvarProfissional(event)" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                <form id="form-profissional" onsubmit="salvarProfissional(event)"
+                    style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
                     <div style="flex: 1; min-width: 200px;">
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Nome da Profissional</label>
-                        <input type="text" id="prof-nome" placeholder="Ex: Camila Hair" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Nome
+                            da Profissional</label>
+                        <input type="text" id="prof-nome" placeholder="Ex: Camila Hair" required
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div style="flex: 1; min-width: 200px;">
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Especialidade</label>
-                        <input type="text" id="prof-especialidade" placeholder="Ex: Cabeleireira / Mechas" required style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Especialidade</label>
+                        <input type="text" id="prof-especialidade" placeholder="Ex: Cabeleireira / Mechas" required
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
                     <div style="flex: 1; min-width: 160px;">
-                        <label style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Telefone/WhatsApp</label>
-                        <input type="text" id="prof-telefone" placeholder="(22) 99999-9999" style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
+                        <label
+                            style="display:block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px;">Telefone/WhatsApp</label>
+                        <input type="text" id="prof-telefone" placeholder="(22) 99999-9999"
+                            style="width: 100%; padding: 0.6rem; border: 1px solid var(--border-light); border-radius: 8px;">
                     </div>
-                    <button type="submit" class="btn-login-profile" style="height: 40px; padding: 0 1.5rem;">+ Cadastrar</button>
+                    <button type="submit" class="btn-login-profile" style="height: 40px; padding: 0 1.5rem;">+
+                        Cadastrar</button>
                 </form>
             </div>
 
@@ -195,4 +232,5 @@
 
     <script src="js/salao_dashboard.js"></script>
 </body>
+
 </html>

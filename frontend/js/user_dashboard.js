@@ -1,3 +1,89 @@
+// Força a recarga da página caso o utilizador use o botão "Voltar" do navegador
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
+const usuarioLogado = localStorage.getItem('usuarioLogado') ||
+    localStorage.getItem('usuario_logado') ||
+    sessionStorage.getItem('usuarioLogado');
+
+if (!usuarioLogado) {
+    // Cria a estrutura do Modal Moderno
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        font-family: 'Poppins', sans-serif;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    const modalBox = document.createElement('div');
+    modalBox.style.cssText = `
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        width: 90%;
+        max-width: 380px;
+        text-align: center;
+        transform: scale(0.9);
+        animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    `;
+
+    modalBox.innerHTML = `
+        <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+        <h3 style="color: #2d3748; font-size: 20px; font-weight: 600; margin-bottom: 8px;">Acesso Restrito</h3>
+        <p style="color: #718096; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Você precisa estar conectado à sua conta para aceder a esta página.
+        </p>
+        <button id="btn-ir-login" style="
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        ">Fazer Login</button>
+    `;
+
+    // Injeta estilos de animação na página
+    const styleSheet = document.createElement('style');
+    styleSheet.innerHTML = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    `;
+    document.head.appendChild(styleSheet);
+
+    modalOverlay.appendChild(modalBox);
+    document.body.appendChild(modalOverlay);
+
+    // Redireciona ao clicar no botão ou automaticamente após 3 segundos
+    const redirecionar = () => {
+        window.location.href = 'login.html';
+    };
+
+    document.getElementById('btn-ir-login').addEventListener('click', redirecionar);
+    setTimeout(redirecionar, 3000);
+
+    // Interrompe a execução do resto do script caso não esteja logado
+    throw new Error("Acesso negado.");
+}
+
 const agendamentos = [
     {
         id: 1,
@@ -89,7 +175,7 @@ const iconeRelogio = `
 
 function obterUsuario() {
     try {
-        return JSON.parse(localStorage.getItem("usuario_logado")) || null;
+        return JSON.parse(localStorage.getItem("usuario_logado") || localStorage.getItem("usuarioLogado")) || null;
     } catch (error) {
         return null;
     }
@@ -115,6 +201,8 @@ function aplicarAvatar(foto) {
         const img = document.getElementById(imgId);
         const vazio = document.getElementById(vazioId);
 
+        if (!caixa || !img || !vazio) return;
+
         caixa.classList.toggle("tem-foto", temFoto);
         vazio.hidden = temFoto;
         vazio.style.display = temFoto ? "none" : "";
@@ -128,7 +216,8 @@ function aplicarAvatar(foto) {
         }
     });
 
-    document.getElementById("btn-remover-foto").hidden = !temFoto;
+    const btnRemover = document.getElementById("btn-remover-foto");
+    if (btnRemover) btnRemover.hidden = !temFoto;
 }
 
 function salvarFoto(usuario, foto) {
@@ -140,6 +229,7 @@ function salvarFoto(usuario, foto) {
     if (foto) usuario.foto = foto;
     else delete usuario.foto;
     localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
 }
 
 function lerFotoArquivo(arquivo) {
@@ -179,6 +269,7 @@ function lerFotoArquivo(arquivo) {
 
 function mostrarMensagemSenha(texto, erro) {
     const msg = document.getElementById("form-senha-msg");
+    if (!msg) return;
     msg.textContent = texto;
     msg.classList.toggle("is-erro", Boolean(erro));
     msg.hidden = !texto;
@@ -190,11 +281,13 @@ function nomeExibicao(usuario) {
 }
 
 function atualizarStats() {
-    document.getElementById("stat-agendamentos").textContent = String(agendamentos.length);
-    document.getElementById("stat-confirmados").textContent = String(
-        agendamentos.filter((item) => item.status === "agendado").length
-    );
-    document.getElementById("stat-finalizados").textContent = String(historico.length);
+    const elAgendados = document.getElementById("stat-agendamentos");
+    const elConfirmados = document.getElementById("stat-confirmados");
+    const elFinalizados = document.getElementById("stat-finalizados");
+
+    if (elAgendados) elAgendados.textContent = String(agendamentos.length);
+    if (elConfirmados) elConfirmados.textContent = String(agendamentos.filter((item) => item.status === "agendado").length);
+    if (elFinalizados) elFinalizados.textContent = String(historico.length);
 }
 
 function acaoDoItem(item) {
@@ -226,7 +319,8 @@ function renderItem(item) {
 }
 
 function termoBusca() {
-    return document.getElementById("busca-procedimento").value.trim().toLowerCase();
+    const input = document.getElementById("busca-procedimento");
+    return input ? input.value.trim().toLowerCase() : "";
 }
 
 function escapar(texto) {
@@ -292,6 +386,7 @@ function renderSalao(salao) {
 
 function renderSaloes() {
     const lista = document.getElementById("lista-saloes");
+    if (!lista) return;
     const encontrados = filtrarSaloes();
 
     lista.innerHTML = encontrados.length
@@ -306,15 +401,21 @@ function renderListas() {
     const origem = listaCompleta ? agendamentos.concat(historico) : agendamentos;
     const visiveis = filtrarPorServico(origem);
 
-    listaProximos.innerHTML = proximos.length
-        ? proximos.map(renderItem).join("")
-        : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
+    if (listaProximos) {
+        listaProximos.innerHTML = proximos.length
+            ? proximos.map(renderItem).join("")
+            : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
+    }
 
-    listaAgendamentos.innerHTML = visiveis.length
-        ? visiveis.map(renderItem).join("")
-        : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
+    if (listaAgendamentos) {
+        listaAgendamentos.innerHTML = visiveis.length
+            ? visiveis.map(renderItem).join("")
+            : `<p class="lista-vazia">Nenhum procedimento encontrado.</p>`;
+    }
 
-    document.getElementById("ver-todos-agendamentos").textContent = listaCompleta ? "Ver menos" : "Ver todos >";
+    const verTodosAg = document.getElementById("ver-todos-agendamentos");
+    if (verTodosAg) verTodosAg.textContent = listaCompleta ? "Ver menos" : "Ver todos >";
+
     renderSaloes();
     atualizarStats();
 }
@@ -328,30 +429,41 @@ function mostrarView(nome) {
         botao.classList.toggle("is-active", botao.dataset.view === nome);
     });
 
-    document.querySelector(".conteudo").scrollTop = 0;
+    const conteudo = document.querySelector(".conteudo");
+    if (conteudo) conteudo.scrollTop = 0;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const usuario = obterUsuario();
     const nome = nomeExibicao(usuario);
 
-    document.getElementById("sidebar-nome").textContent = nome;
-    document.getElementById("main-nome").textContent = nome;
-    document.getElementById("agendamentos-nome").textContent = nome;
-    document.getElementById("perfil-nome").textContent = nome === "visitante" ? "—" : nome;
-    document.getElementById("perfil-email").textContent = usuario && usuario.email ? usuario.email : "—";
-    document.getElementById("perfil-telefone").textContent = usuario && usuario.telefone ? usuario.telefone : "—";
-    aplicarAvatar(fotoSalva(usuario));
+    const elSidebarNome = document.getElementById("sidebar-nome");
+    const elMainNome = document.getElementById("main-nome");
+    const elAgendamentosNome = document.getElementById("agendamentos-nome");
+    const elPerfilNome = document.getElementById("perfil-nome");
+    const elPerfilEmail = document.getElementById("perfil-email");
+    const elPerfilTelefone = document.getElementById("perfil-telefone");
 
+    if (elSidebarNome) elSidebarNome.textContent = nome;
+    if (elMainNome) elMainNome.textContent = nome;
+    if (elAgendamentosNome) elAgendamentosNome.textContent = nome;
+    if (elPerfilNome) elPerfilNome.textContent = nome === "visitante" ? "—" : nome;
+    if (elPerfilEmail) elPerfilEmail.textContent = usuario && usuario.email ? usuario.email : "—";
+    if (elPerfilTelefone) elPerfilTelefone.textContent = usuario && usuario.telefone ? usuario.telefone : "—";
+
+    aplicarAvatar(fotoSalva(usuario));
     renderListas();
 
-    document.getElementById("busca-procedimento").addEventListener("input", () => {
-        const viewAtiva = document.querySelector(".view:not([hidden])");
-        if (!viewAtiva || viewAtiva.id !== "view-agendamentos") {
-            mostrarView("dashboard");
-        }
-        renderListas();
-    });
+    const buscaProc = document.getElementById("busca-procedimento");
+    if (buscaProc) {
+        buscaProc.addEventListener("input", () => {
+            const viewAtiva = document.querySelector(".view:not([hidden])");
+            if (!viewAtiva || viewAtiva.id !== "view-agendamentos") {
+                mostrarView("dashboard");
+            }
+            renderListas();
+        });
+    }
 
     function confirmarAgendamento(evento) {
         const botao = evento.target.closest(".btn-confirmar");
@@ -364,31 +476,43 @@ document.addEventListener("DOMContentLoaded", () => {
         renderListas();
     }
 
-    document.getElementById("lista-proximos").addEventListener("click", confirmarAgendamento);
-    document.getElementById("lista-agendamentos").addEventListener("click", confirmarAgendamento);
+    const listaProx = document.getElementById("lista-proximos");
+    if (listaProx) listaProx.addEventListener("click", confirmarAgendamento);
 
-    document.getElementById("ver-todos").addEventListener("click", () => {
-        document.getElementById("busca-procedimento").value = "";
-        listaCompleta = true;
-        renderListas();
-        mostrarView("agendamentos");
-    });
+    const listaAg = document.getElementById("lista-agendamentos");
+    if (listaAg) listaAg.addEventListener("click", confirmarAgendamento);
 
-    document.getElementById("ver-todos-agendamentos").addEventListener("click", () => {
-        listaCompleta = !listaCompleta;
-        renderListas();
-    });
+    const btnVerTodos = document.getElementById("ver-todos");
+    if (btnVerTodos) {
+        btnVerTodos.addEventListener("click", () => {
+            if (buscaProc) buscaProc.value = "";
+            listaCompleta = true;
+            renderListas();
+            mostrarView("agendamentos");
+        });
+    }
 
-    document.getElementById("lista-saloes").addEventListener("click", (evento) => {
-        const favorito = evento.target.closest(".salao-favorito");
-        if (!favorito) return;
+    const btnVerTodosAg = document.getElementById("ver-todos-agendamentos");
+    if (btnVerTodosAg) {
+        btnVerTodosAg.addEventListener("click", () => {
+            listaCompleta = !listaCompleta;
+            renderListas();
+        });
+    }
 
-        const salao = saloes.find((item) => item.id === Number(favorito.dataset.id));
-        if (!salao) return;
+    const listaSal = document.getElementById("lista-saloes");
+    if (listaSal) {
+        listaSal.addEventListener("click", (evento) => {
+            const favorito = evento.target.closest(".salao-favorito");
+            if (!favorito) return;
 
-        salao.favorito = !salao.favorito;
-        renderSaloes();
-    });
+            const salao = saloes.find((item) => item.id === Number(favorito.dataset.id));
+            if (!salao) return;
+
+            salao.favorito = !salao.favorito;
+            renderSaloes();
+        });
+    }
 
     document.querySelectorAll(".menu-item").forEach((botao) => {
         botao.addEventListener("click", () => {
@@ -398,84 +522,108 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    document.getElementById("btn-avatar").addEventListener("click", () => {
-        mostrarView("perfil");
-    });
+    const btnAvatar = document.getElementById("btn-avatar");
+    if (btnAvatar) {
+        btnAvatar.addEventListener("click", () => {
+            mostrarView("perfil");
+        });
+    }
 
-    document.getElementById("input-foto").addEventListener("change", async (evento) => {
-        const arquivo = evento.target.files && evento.target.files[0];
-        evento.target.value = "";
-        if (!arquivo) return;
+    const inputFoto = document.getElementById("input-foto");
+    if (inputFoto) {
+        inputFoto.addEventListener("change", async (evento) => {
+            const arquivo = evento.target.files && evento.target.files[0];
+            evento.target.value = "";
+            if (!arquivo) return;
 
-        try {
-            const foto = await lerFotoArquivo(arquivo);
-            salvarFoto(usuario, foto);
-            aplicarAvatar(foto);
-        } catch (error) {
-            alert(error.message || "Não foi possível usar essa imagem.");
-        }
-    });
+            try {
+                const foto = await lerFotoArquivo(arquivo);
+                salvarFoto(usuario, foto);
+                aplicarAvatar(foto);
+            } catch (error) {
+                alert(error.message || "Não foi possível usar essa imagem.");
+            }
+        });
+    }
 
-    document.getElementById("btn-remover-foto").addEventListener("click", () => {
-        salvarFoto(usuario, "");
-        aplicarAvatar("");
-    });
+    const btnRemoverFoto = document.getElementById("btn-remover-foto");
+    if (btnRemoverFoto) {
+        btnRemoverFoto.addEventListener("click", () => {
+            salvarFoto(usuario, "");
+            aplicarAvatar("");
+        });
+    }
 
     const formSenha = document.getElementById("form-senha");
+    const btnTrocarSenha = document.getElementById("btn-trocar-senha");
+    if (btnTrocarSenha && formSenha) {
+        btnTrocarSenha.addEventListener("click", () => {
+            formSenha.hidden = false;
+            mostrarMensagemSenha("");
+            const senhaAtual = document.getElementById("senha-atual");
+            if (senhaAtual) senhaAtual.focus();
+        });
+    }
 
-    document.getElementById("btn-trocar-senha").addEventListener("click", () => {
-        formSenha.hidden = false;
-        mostrarMensagemSenha("");
-        document.getElementById("senha-atual").focus();
-    });
+    const btnCancelarSenha = document.getElementById("btn-cancelar-senha");
+    if (btnCancelarSenha && formSenha) {
+        btnCancelarSenha.addEventListener("click", () => {
+            formSenha.reset();
+            formSenha.hidden = true;
+            mostrarMensagemSenha("");
+        });
+    }
 
-    document.getElementById("btn-cancelar-senha").addEventListener("click", () => {
-        formSenha.reset();
-        formSenha.hidden = true;
-        mostrarMensagemSenha("");
-    });
+    if (formSenha) {
+        formSenha.addEventListener("submit", (evento) => {
+            evento.preventDefault();
+            const atual = document.getElementById("senha-atual").value;
+            const nova = document.getElementById("senha-nova").value;
+            const confirma = document.getElementById("senha-confirma").value;
 
-    formSenha.addEventListener("submit", (evento) => {
-        evento.preventDefault();
-        const atual = document.getElementById("senha-atual").value;
-        const nova = document.getElementById("senha-nova").value;
-        const confirma = document.getElementById("senha-confirma").value;
+            if (nova.length < 6) {
+                mostrarMensagemSenha("A nova senha precisa ter pelo menos 6 caracteres.", true);
+                return;
+            }
 
-        if (nova.length < 6) {
-            mostrarMensagemSenha("A nova senha precisa ter pelo menos 6 caracteres.", true);
-            return;
-        }
+            if (nova !== confirma) {
+                mostrarMensagemSenha("A confirmação não é igual à nova senha.", true);
+                return;
+            }
 
-        if (nova !== confirma) {
-            mostrarMensagemSenha("A confirmação não é igual à nova senha.", true);
-            return;
-        }
+            if (nova === atual) {
+                mostrarMensagemSenha("Escolha uma senha diferente da atual.", true);
+                return;
+            }
 
-        if (nova === atual) {
-            mostrarMensagemSenha("Escolha uma senha diferente da atual.", true);
-            return;
-        }
+            if (!usuario) {
+                mostrarMensagemSenha("Entre na sua conta para trocar a senha.", true);
+                return;
+            }
 
-        if (!usuario) {
-            mostrarMensagemSenha("Entre na sua conta para trocar a senha.", true);
-            return;
-        }
+            if (usuario.senha && usuario.senha !== atual) {
+                mostrarMensagemSenha("A senha atual não confere.", true);
+                return;
+            }
 
-        if (usuario.senha && usuario.senha !== atual) {
-            mostrarMensagemSenha("A senha atual não confere.", true);
-            return;
-        }
+            usuario.senha = nova;
+            localStorage.setItem("usuario_logado", JSON.stringify(usuario));
+            localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+            formSenha.reset();
+            formSenha.hidden = true;
+            mostrarMensagemSenha("Senha atualizada.");
+        });
+    }
 
-        usuario.senha = nova;
-        localStorage.setItem("usuario_logado", JSON.stringify(usuario));
-        formSenha.reset();
-        formSenha.hidden = true;
-        mostrarMensagemSenha("Senha atualizada.");
-    });
-
-    document.getElementById("btn-sair").addEventListener("click", () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("usuario_logado");
-        window.location.href = "login.html";
-    });
+    const btnSair = document.getElementById("btn-sair");
+    if (btnSair) {
+        btnSair.addEventListener("click", () => {
+            // Limpa todas as chaves possíveis de sessão para evitar cache de login
+            localStorage.removeItem("token");
+            localStorage.removeItem("usuario_logado");
+            localStorage.removeItem("usuarioLogado");
+            sessionStorage.removeItem("usuarioLogado");
+            window.location.href = "login.html";
+        });
+    }
 });

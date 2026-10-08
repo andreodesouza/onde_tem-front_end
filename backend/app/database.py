@@ -16,10 +16,6 @@ DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 
-# O restante do código continua igual...
-
-# O restante do seu código continua igual...
-
 # Codifica a palavra-passe para que caracteres especiais (como o '@') não quebrem a URL
 senha_segura = quote_plus(DB_PASSWORD) if DB_PASSWORD else ""
 

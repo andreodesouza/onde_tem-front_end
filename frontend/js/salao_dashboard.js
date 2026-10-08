@@ -1,3 +1,89 @@
+// Força a recarga da página caso o utilizador use o botão "Voltar" do navegador
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
+const usuarioLogado = localStorage.getItem('usuarioLogado') ||
+    localStorage.getItem('usuario_logado') ||
+    sessionStorage.getItem('usuarioLogado');
+
+if (!usuarioLogado) {
+    // Cria a estrutura do Modal Moderno
+    const modalOverlay = document.createElement('div');
+    modalOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        font-family: 'Poppins', sans-serif;
+        animation: fadeIn 0.3s ease;
+    `;
+
+    const modalBox = document.createElement('div');
+    modalBox.style.cssText = `
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        width: 90%;
+        max-width: 380px;
+        text-align: center;
+        transform: scale(0.9);
+        animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    `;
+
+    modalBox.innerHTML = `
+        <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+        <h3 style="color: #2d3748; font-size: 20px; font-weight: 600; margin-bottom: 8px;">Acesso Restrito</h3>
+        <p style="color: #718096; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Você precisa estar conectado à sua conta para aceder a esta página.
+        </p>
+        <button id="btn-ir-login" style="
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        ">Fazer Login</button>
+    `;
+
+    // Injeta estilos de animação na página
+    const styleSheet = document.createElement('style');
+    styleSheet.innerHTML = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    `;
+    document.head.appendChild(styleSheet);
+
+    modalOverlay.appendChild(modalBox);
+    document.body.appendChild(modalOverlay);
+
+    // Redireciona ao clicar no botão ou automaticamente após 3 segundos
+    const redirecionar = () => {
+        window.location.href = 'login.html';
+    };
+
+    document.getElementById('btn-ir-login').addEventListener('click', redirecionar);
+    setTimeout(redirecionar, 3000);
+
+    // Interrompe a execução do resto do script caso não esteja logado
+    throw new Error("Acesso negado.");
+}
+
 const EMPRESA_ID = 1;
 
 // Mock de dados locais para testes visuais
@@ -264,9 +350,11 @@ async function salvarServico(event) {
 
 function fazerLogout() {
     if (confirm("Deseja realmente sair da conta do estabelecimento?")) {
-        // Limpa possíveis tokens e dados gravados na sessão
+        // Limpa todas as chaves de sessão possíveis para evitar acessos indesejados via botão Voltar
         localStorage.removeItem('empresa_id');
         localStorage.removeItem('token');
+        localStorage.removeItem('usuarioLogado');
+        localStorage.removeItem('usuario_logado');
         sessionStorage.clear();
 
         // Redireciona para a página de login
