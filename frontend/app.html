@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onde Tem? - Agendamento de Serviços Estéticos</title>
+  <!-- Favicon e Manifest -->
+  <link rel="icon" type="image/png" href="assets/img/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <!-- Leaflet CSS para o Mapa -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Seu CSS Personalizado -->
+  <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+
+  <!-- HEADER / NAVEGAÇÃO -->
+  <header class="header-principal">
+    <div class="logo-container">
+      <img src="assets/img/icon-192.png" alt="Logo Onde Tem" width="32" height="32">
+      <span class="logo-texto">Onde tem?</span>
+    </div>
+
+    <div class="search-bar-container">
+      <input type="search" id="input-busca" placeholder="Busque por serviços ou profissionais..." />
+      <button class="btn-busca">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="landing/index.html" class="link-landing">Conheça</a>
+      <button id="btn-notificacao" class="btn-icone" title="Notificações">🔔</button>
+      <a href="login.html" class="btn-login-header">Login</a>
+    </div>
+  </header>
+
+  <!-- CONTAINER PRINCIPAL (LAYOUT SPLIT: LISTA + MAPA) -->
+  <main class="main-container">
+
+    <!-- LADO ESQUERDO: LISTAGEM E CATEGORIAS -->
+    <section class="listings-side">
+      <div class="hero-mini">
+        <h1>Seu momento de beleza,</h1>
+        <p>agendado em poucos cliques.</p>
+      </div>
+
+      <!-- CATEGORIAS -->
+      <div class="categories-wrapper">
+        <div class="category-item" data-categoria="cabelo">
+          <div class="icon-circle" aria-hidden="true">
+            <img class="icone-cabelo" src="img/icone-cabelo.png" alt="">
+          </div>
+          <p>Cabelo</p>
+        </div>
+        <div class="category-item" data-categoria="manicure">
+          <div class="icon-circle" aria-hidden="true">
+            <img class="icone-manicure" src="img/icone-manicure.png" alt="">
+          </div>
+          <p>Manicure</p>
+        </div>
+        <div class="category-item" data-categoria="depilacao">
+          <div class="icon-circle" aria-hidden="true">
+            <img class="icone-depilacao" src="img/icone-depilacao.png" alt="">
+          </div>
+          <p>Depilação</p>
+        </div>
+        <div class="category-item" data-categoria="sobrancelhas">
+          <div class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4.5 9.5c2.4-2.6 4.8-3.7 7.5-3.7s5.1 1.1 7.5 3.7" />
+              <path d="M6.5 15.2c1.8 1.4 3.6 2 5.5 2s3.7-.6 5.5-2" />
+            </svg>
+          </div>
+          <p>Sobrancelhas</p>
+        </div>
+        <div class="category-item" data-categoria="massagem">
+          <div class="icon-circle" aria-hidden="true">
+            <img class="icone-massagem" src="img/icone-massagem.png" alt="">
+          </div>
+          <p>Massagem</p>
+        </div>
+        <div class="category-item ativo" data-categoria="todos">
+          <div class="icon-circle" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="4" width="6.5" height="6.5" rx="1.6" />
+              <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6" />
+              <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6" />
+              <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" />
+            </svg>
+          </div>
+          <p>Todos</p>
+        </div>
+      </div>
+
+      <!-- CARDS DE SALÕES -->
+      <div class="content-cards">
+        <h2>Salões e Clínicas em Destaque</h2>
+        <div class="grid-cards" id="container-cards">
+          <!-- Os cards serão injetados dinamicamente via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- LADO DIREITO: MAPA -->
+    <section class="map-side">
+      <div id="map"></div>
+    </section>
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Seu Script Principal -->
+  <!-- 1. Gestão de PWA e Notificações -->
+  <script src="js/app.js"></script>
+
+  <!-- 2. Lógica Principal, Mapa e Interface -->
+  <script src="js/index.js"></script>
+
+  <!-- MODAL DE AGENDAMENTO -->
+  <div id="modal-agendamento" class="modal-overlay"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
+    <div class="modal-content"
+      style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+      <h3 id="modal-titulo-salao" style="margin-bottom: 15px; color: #333;">Agendar Serviço</h3>
+
+      <form id="form-agendamento" style="display: flex; flex-direction: column; gap: 12px;">
+        <label style="font-size: 14px; font-weight: 600;">Data desejada:</label>
+        <input type="date" id="data-agendamento" required
+          style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+
+        <label style="font-size: 14px; font-weight: 600;">Horário:</label>
+        <input type="time" id="hora-agendamento" required
+          style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+          <button type="button" onclick="fecharModalAgendamento()"
+            style="padding: 10px 15px; background: #ccc; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
+          <button type="submit"
+            style="padding: 10px 15px; background: #6c5ce7; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Confirmar
+            Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+
+</body>
+
+</html>
