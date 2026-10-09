@@ -1,14 +1,15 @@
 // js/index.js
 
 const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "http://127.0.0.1:8000"               // URL usada quando você testa localmente
-  : "https://onde-tem-back-end.onrender.com"; // URL usada quando o site estiver no ar (ex: Vercel/Render)
+  ? "http://127.0.0.1:8000"
+  : "https://onde-tem-back-end.onrender.com";
 
 document.addEventListener("DOMContentLoaded", () => {
   inicializarMapa();
   carregarSaloesDaAPI();
   configurarFiltrosCategorias();
   configurarBusca();
+  verificarEstadoLoginHeader();
 });
 
 let map;
@@ -58,7 +59,6 @@ async function carregarSaloesDaAPI() {
     }
 
     saloes.forEach((salao, index) => {
-      // Normalizamos os serviços em minúsculas para facilitar a comparação do filtro
       const servicosTexto = (salao.servicos || "").toLowerCase();
 
       const cardHTML = `
@@ -85,7 +85,6 @@ async function carregarSaloesDaAPI() {
   }
 }
 
-// Lógica de Filtro por Categorias corrigida e robusta
 function configurarFiltrosCategorias() {
   const categorias = document.querySelectorAll(".category-item");
 
@@ -94,7 +93,6 @@ function configurarFiltrosCategorias() {
       const filtro = item.getAttribute("data-categoria").toLowerCase().trim();
       const cards = document.querySelectorAll(".card-salao");
 
-      // Atualiza a classe ativa visualmente
       categorias.forEach((c) => c.classList.remove("ativo"));
       item.classList.add("ativo");
 
@@ -132,12 +130,152 @@ function configurarBusca() {
   });
 }
 
-let salaoAtualId = "";
-let salaoAtualNome = "";
+// Verifica o estado da sessão e cria o menu em cascata no cabeçalho
+function verificarEstadoLoginHeader() {
+  const usuarioLogadoStr = localStorage.getItem('usuario_logado') || localStorage.getItem('usuarioLogado') || sessionStorage.getItem('usuarioLogado');
+  const headerActions = document.querySelector('.header-actions');
 
-// Substitua a função antiga por esta:
+  if (!headerActions) return;
+
+  const btnLoginHeader = headerActions.querySelector('.btn-login-header');
+
+  if (usuarioLogadoStr) {
+    let usuario;
+    try {
+      usuario = JSON.parse(usuarioLogadoStr);
+    } catch (e) {
+      usuario = { nome: "Conta", tipo: "cliente" };
+    }
+
+    const nomeExibicao = usuario.nome || usuario.email || "Minha Conta";
+    const isSalao = usuario.tipo === 'empresa';
+    const linkPainel = isSalao ? 'salao_dashboard.html' : 'user_dashboard.html';
+    const textoPainel = isSalao ? 'Painel do Salão' : 'Painel do Utilizador';
+
+    const userMenuContainer = document.createElement('div');
+    userMenuContainer.className = 'user-menu-container';
+
+    userMenuContainer.innerHTML = `
+      <button class="btn-user-dropdown" id="btn-dropdown-toggle" type="button">
+        👤 ${nomeExibicao.split(' ')[0]} ▾
+      </button>
+      <div class="dropdown-content" id="dropdown-menu">
+        <a href="${linkPainel}">${textoPainel}</a>
+        <hr>
+        <button id="btn-sair-sessao" type="button" style="color: #e53e3e;">Terminar Sessão</button>
+      </div>
+    `;
+
+    if (btnLoginHeader) {
+      btnLoginHeader.replaceWith(userMenuContainer);
+    } else {
+      headerActions.appendChild(userMenuContainer);
+    }
+
+    const toggleBtn = document.getElementById('btn-dropdown-toggle');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    dropdownMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    window.addEventListener('click', () => {
+      dropdownMenu.classList.remove('show');
+    });
+
+    document.getElementById('btn-sair-sessao').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario_logado');
+      localStorage.removeItem('usuarioLogado');
+      sessionStorage.removeItem('usuarioLogado');
+      window.location.href = 'index.html';
+    });
+  }
+}
+
+// Modal Moderno de Acesso Restrito
+function mostrarModalRestrito() {
+  const modalOverlay = document.createElement('div');
+  modalOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        font-family: 'Poppins', sans-serif;
+        animation: fadeIn 0.3s ease;
+    `;
+
+  const modalBox = document.createElement('div');
+  modalBox.style.cssText = `
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        width: 90%;
+        max-width: 380px;
+        text-align: center;
+        transform: scale(0.9);
+        animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    `;
+
+  modalBox.innerHTML = `
+        <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+        <h3 style="color: #2d3748; font-size: 20px; font-weight: 600; margin-bottom: 8px;">Acesso Restrito</h3>
+        <p style="color: #718096; font-size: 14px; margin-bottom: 20px; line-height: 1.5;">
+            Você precisa estar conectado à sua conta para aceder a esta página.
+        </p>
+        <button id="btn-ir-login" style="
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        ">Fazer Login</button>
+    `;
+
+  const styleSheet = document.createElement('style');
+  styleSheet.innerHTML = `
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    `;
+  document.head.appendChild(styleSheet);
+
+  modalOverlay.appendChild(modalBox);
+  document.body.appendChild(modalOverlay);
+
+  const redirecionar = () => {
+    window.location.href = 'login.html';
+  };
+
+  document.getElementById('btn-ir-login').addEventListener('click', redirecionar);
+  setTimeout(redirecionar, 3000);
+}
+
 function abrirAgendamento(salaoId, salaoNome) {
-  // Redireciona para a página do salão passando o ID como parâmetro na URL
+  const usuarioLogado = localStorage.getItem('usuario_logado') || localStorage.getItem('usuarioLogado') || sessionStorage.getItem('usuarioLogado');
+
+  if (!usuarioLogado) {
+    mostrarModalRestrito();
+    return;
+  }
+
   window.location.href = `salao.html?id=${salaoId}`;
 }
 
@@ -147,48 +285,3 @@ function fecharModalAgendamento() {
     modal.style.display = "none";
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const formAgendamento = document.getElementById("form-agendamento");
-  if (formAgendamento) {
-    formAgendamento.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const data = document.getElementById("data-agendamento").value;
-      const hora = document.getElementById("hora-agendamento").value;
-
-      if (!data || !hora) {
-        alert("Por favor, selecione a data e a hora.");
-        return;
-      }
-
-      try {
-        const resposta = await fetch(`${API_URL}/api/agendamentos`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            salao_id: salaoAtualId,
-            data: data,
-            hora: hora,
-            cliente_email: "usuario@teste.com"
-          })
-        });
-
-        const resultado = await resposta.json();
-
-        if (resposta.ok) {
-          alert(`🎉 Sucesso!\n${resultado.mensagem}\n\nSalão: ${salaoAtualNome}\nData: ${data} às ${hora}`);
-          fecharModalAgendamento();
-          formAgendamento.reset();
-        } else {
-          alert(`❌ Erro: ${resultado.detail}`);
-        }
-      } catch (error) {
-        console.error("Erro ao conectar com o servidor:", error);
-        alert("Erro ao tentar registrar o agendamento.");
-      }
-    });
-  }
-});

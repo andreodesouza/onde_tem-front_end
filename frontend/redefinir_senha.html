@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onde Tem? — Redefinição de Senha</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/redefinir_senha.css" />
+</head>
+
+<body>
+    <main class="tela-login">
+        <div class="background" aria-hidden="true">
+            <img src="assets/img/background.png" alt="" />
+        </div>
+
+        <section class="square">
+            <div class="square-inner">
+                <header class="header" id="header-redefinicao">
+                    <div class="logo">
+                        <img src="assets/img/logo.png" alt="ONDE TEM" />
+                    </div>
+                    <h1>Redefinição de Senha</h1>
+                </header>
+
+                <!-- Formulário para Solicitar E-mail -->
+                <form class="login-framer" id="form-solicitacao-senha">
+                    <div class="buttons-login">
+                        <div class="login-senha">
+                            <label class="field">
+                                <input type="email" id="email-redefinicao"
+                                    placeholder="Digite seu e-mail para redefinir" required />
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-start">Enviar Código</button>
+                </form>
+
+                <!-- Painel de Redefinição com Código e Nova Senha (Inicialmente Oculto) -->
+                <div id="painel-ativacao" class="painel-ativacao-oculto">
+                    <div class="header header-painel">
+                        <h2>Nova Palavra-passe</h2>
+                        <p>Insira o código de 6 dígitos enviado e defina a sua nova senha.</p>
+                    </div>
+
+                    <form id="form-redefinicao" class="form-redefinicao-interno">
+                        <label class="field">
+                            <input type="text" id="codigo-ativacao" class="input-codigo"
+                                placeholder="Código de 6 dígitos" maxlength="6" required />
+                        </label>
+
+                        <label class="field">
+                            <input type="password" id="nova-senha" placeholder="Palavra-passe" required />
+                        </label>
+                        <small id="senha-feedback" class="senha-feedback"></small>
+
+                        <label class="field">
+                            <input type="password" id="confirmar-nova-senha" placeholder="Confirmar palavra-passe"
+                                required />
+                        </label>
+
+                        <button type="submit" class="btn-start">Alterar Senha</button>
+                    </form>
+                </div>
+
+                <a class="btn-cadastrar" href="login.html" id="link-ir-login">
+                    <span>Já tem conta? <strong>Entrar</strong></span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/redefinir_senha.js"></script>
+</body>
+
+</html>
