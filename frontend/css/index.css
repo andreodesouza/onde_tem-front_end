@@ -157,9 +157,54 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  color: #553a73;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   transition: background 0.2s, color 0.2s;
+}
+
+.icon-circle svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-circle .icone-cabelo,
+.icon-circle .icone-manicure,
+.icon-circle .icone-depilacao,
+.icon-circle .icone-massagem {
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(18%) sepia(31%) saturate(1268%) hue-rotate(236deg) brightness(93%) contrast(90%);
+}
+
+.icon-circle .icone-cabelo {
+  width: 34px;
+  height: 40px;
+}
+
+.icon-circle .icone-manicure {
+  width: 32px;
+  height: 36px;
+}
+
+.icon-circle .icone-depilacao {
+  width: 36px;
+  height: 38px;
+}
+
+.icon-circle .icone-massagem {
+  width: 34px;
+  height: 40px;
+}
+
+.category-item.ativo .icon-circle .icone-cabelo,
+.category-item.ativo .icon-circle .icone-manicure,
+.category-item.ativo .icon-circle .icone-depilacao,
+.category-item.ativo .icon-circle .icone-massagem {
+  filter: brightness(0) invert(1);
 }
 
 .category-item.ativo .icon-circle {
