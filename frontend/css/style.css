@@ -496,6 +496,16 @@ input {
   font-size: 1.3rem;
 }
 
+.icone svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: var(--roxo);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .passos {
   list-style: none;
   counter-reset: passo;
