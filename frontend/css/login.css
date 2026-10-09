@@ -58,11 +58,33 @@ body {
   align-items: center;
 }
 
+/* Estilo do Botão Voltar ao Início */
+.btn-voltar-home {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: opacity 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-voltar-home:hover {
+  opacity: 1;
+  color: #ffffff;
+  text-decoration: underline;
+}
+
 .square-inner {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 10px;
 }
 
 .header {

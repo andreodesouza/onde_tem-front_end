@@ -2,7 +2,7 @@
   "name": "Onde tem? - Agendamento",
   "short_name": "Onde tem?",
   "description": "Agendamento online de serviços estéticos perto de você.",
-  "start_url": "./index.html",
+  "start_url": "./app.html",
   "display": "standalone",
   "background_color": "#f8f9fa",
   "theme_color": "#d93d3d",

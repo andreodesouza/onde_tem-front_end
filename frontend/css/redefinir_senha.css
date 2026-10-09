@@ -40,7 +40,6 @@ body {
     object-fit: cover;
 }
 
-/* Caixa central maior e com scroll se necessário */
 .square {
     position: relative;
     width: 440px;
@@ -99,36 +98,6 @@ body {
     font-size: 1.15rem;
     font-weight: 600;
     text-align: center;
-}
-
-/* Botões de Seleção (Cliente / Empresa) específicos do cadastro */
-.roles {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    justify-content: center;
-    margin-top: 5px;
-}
-
-.role-btn {
-    flex: 1;
-    padding: 8px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-    font-family: "Poppins", sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.role-btn.active {
-    background: #ffffff;
-    color: #553a73;
-    font-weight: 600;
-    border-color: #ffffff;
 }
 
 .login-framer {
@@ -268,4 +237,50 @@ body {
         opacity: 0;
         transform: translateX(50px);
     }
+}
+
+/* Controla a ocultação/exibição do painel de ativação */
+.painel-ativacao-oculto {
+    display: none;
+    width: 100%;
+}
+
+.header-painel {
+    margin-bottom: 15px;
+}
+
+.header-painel h2 {
+    color: #fff;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.header-painel p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    margin-top: 5px;
+}
+
+.form-redefinicao-interno {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.input-codigo {
+    text-align: center;
+    font-size: 1.1rem;
+    letter-spacing: 4px;
+    color: #fff;
+}
+
+.senha-feedback {
+    font-size: 0.8rem;
+    text-align: left;
+    width: 100%;
+    margin-top: -8px;
+    margin-bottom: -4px;
+    font-family: "Poppins", sans-serif;
 }

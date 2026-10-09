@@ -11,6 +11,9 @@
   <!-- Leaflet CSS para o Mapa -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- Seu CSS Personalizado -->
+  <link rel="icon" type="image/png" href="assets/img/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="css/index.css">
 </head>
 
@@ -30,6 +33,7 @@
 
     <div class="header-actions">
       <a href="landing/index.html" class="link-landing">Conheça</a>
+      <a href="landing/app.html" class="link-landing">Conheça</a>
       <button id="btn-notificacao" class="btn-icone" title="Notificações">🔔</button>
       <a href="login.html" class="btn-login-header">Login</a>
     </div>
@@ -89,6 +93,27 @@
               <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" />
             </svg>
           </div>
+          <div class="icon-circle">✂️</div>
+          <p>Cabelo</p>
+        </div>
+        <div class="category-item" data-categoria="manicure">
+          <div class="icon-circle">💅</div>
+          <p>Manicure</p>
+        </div>
+        <div class="category-item" data-categoria="depilacao">
+          <div class="icon-circle">🌸</div>
+          <p>Depilação</p>
+        </div>
+        <div class="category-item" data-categoria="sobrancelhas">
+          <div class="icon-circle">👁️</div>
+          <p>Sobrancelhas</p>
+        </div>
+        <div class="category-item" data-categoria="massagem">
+          <div class="icon-circle">💆‍♀️</div>
+          <p>Massagem</p>
+        </div>
+        <div class="category-item ativo" data-categoria="todos">
+          <div class="icon-circle destaque">🔲</div>
           <p>Todos</p>
         </div>
       </div>
@@ -147,6 +172,9 @@
 
   
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/index.js"></script>
 </body>
 
 </html>
