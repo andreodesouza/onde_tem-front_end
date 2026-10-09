@@ -1,143 +1,267 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onde Tem? - Agendamento de Serviços Estéticos</title>
-  <!-- Favicon e Manifest -->
-  <link rel="icon" type="image/png" href="assets/img/icon-192.png">
-  <link rel="manifest" href="manifest.json">
-  <!-- Leaflet CSS para o Mapa -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- Seu CSS Personalizado -->
-  <link rel="stylesheet" href="css/index.css">
+  <title>Onde Tem? — Agende seu horário de beleza em Saquarema</title>
+  <meta name="description"
+    content="Encontre salões e clínicas perto de você e agende em poucos cliques. Salões de Saquarema crescem com o sistema Onde Tem.">
+  <link rel="icon" type="image/png" href="../assets/img/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+  <header class="topo" id="topo">
+    <a class="marca" href="#topo">
+      <img src="assets/img/LOGO_PNG.png" alt="Onde tem?">
+    </a>
 
-  <!-- HEADER / NAVEGAÇÃO -->
-  <header class="header-principal">
-    <div class="logo-container">
-      <img src="assets/img/icon-192.png" alt="Logo Onde Tem" width="32" height="32">
-      <span class="logo-texto">Onde tem?</span>
-    </div>
+    <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-principal">
+      Menu
+    </button>
 
-    <div class="search-bar-container">
-      <input type="search" id="input-busca" placeholder="Busque por serviços ou profissionais..." />
-      <button class="btn-busca">🔍</button>
-    </div>
-
-    <div class="header-actions">
-      <a href="landing/index.html" class="link-landing">Conheça</a>
-      <button id="btn-notificacao" class="btn-icone" title="Notificações">🔔</button>
-      <a href="login.html" class="btn-login-header">Login</a>
-    </div>
+    <nav class="menu" id="menu-principal">
+      <a href="#para-voce">Para você</a>
+      <a href="#para-saloes">Para salões</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="../login.html">Entrar</a>
+      <a class="btn btn-roxo" href="../cadastro.html">Começar grátis</a>
+    </nav>
   </header>
 
-  <!-- CONTAINER PRINCIPAL (LAYOUT SPLIT: LISTA + MAPA) -->
-  <main class="main-container">
-
-    <!-- LADO ESQUERDO: LISTAGEM E CATEGORIAS -->
-    <section class="listings-side">
-      <div class="hero-mini">
-        <h1>Seu momento de beleza,</h1>
-        <p>agendado em poucos cliques.</p>
+  <main>
+    <section class="hero">
+      <div class="hero-texto">
+        <p class="selo">Beleza em Saquarema, do seu jeito</p>
+        <h1>Seu momento de beleza, agendado em <span class="destaque">poucos cliques</span></h1>
+        <p class="hero-lead">
+          Chega de mandar mensagem e ficar esperando. No Onde Tem você encontra salões e clínicas no mapa,
+          escolhe o serviço e marca o horário que cabe na sua rotina.
+        </p>
+        <div class="hero-acoes">
+          <a class="btn btn-roxo btn-grande" href="../index.html">Quero usar o aplicativo</a>
+          <a class="btn btn-contorno btn-grande" href="../cadastro.html?tipo=cliente">Criar minha conta</a>
+        </div>
+        <ul class="hero-servicos">
+          <li>Cabelo</li>
+          <li>Manicure</li>
+          <li>Sobrancelha</li>
+          <li>Depilação</li>
+          <li>Massagem</li>
+        </ul>
       </div>
 
-      <!-- CATEGORIAS -->
-      <div class="categories-wrapper">
-        <div class="category-item" data-categoria="cabelo">
-          <div class="icon-circle" aria-hidden="true">
-            <img class="icone-cabelo" src="img/icone-cabelo.png" alt="">
+      <div class="hero-visual" aria-hidden="true">
+        <div class="mancha mancha-rosa"></div>
+        <div class="mancha mancha-lilas"></div>
+        <p class="flutuante flutuante-a">Avaliação de quem foi</p>
+        <p class="flutuante flutuante-b">Sem fila no WhatsApp</p>
+        <article class="preview">
+          <div class="preview-mapa">
+            <img src="assets/img/salao-hero.jpg" alt="">
+            <span class="distancia">Perto de você</span>
           </div>
-          <p>Cabelo</p>
-        </div>
-        <div class="category-item" data-categoria="manicure">
-          <div class="icon-circle" aria-hidden="true">
-            <img class="icone-manicure" src="img/icone-manicure.png" alt="">
+          <div class="preview-corpo">
+            <p class="preview-etiqueta">Horário livre hoje</p>
+            <h2>O salão que combina com você</h2>
+            <p>Corte, escova, unhas e sobrancelha</p>
+            <div class="preview-chips">
+              <span>Hoje · 15:30</span>
+              <span class="chip-rosa">Confirma na hora</span>
+            </div>
+            <span class="preview-botao">Agendar</span>
           </div>
-          <p>Manicure</p>
-        </div>
-        <div class="category-item" data-categoria="depilacao">
-          <div class="icon-circle" aria-hidden="true">
-            <img class="icone-depilacao" src="img/icone-depilacao.png" alt="">
-          </div>
-          <p>Depilação</p>
-        </div>
-        <div class="category-item" data-categoria="sobrancelhas">
-          <div class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M4.5 9.5c2.4-2.6 4.8-3.7 7.5-3.7s5.1 1.1 7.5 3.7"/>
-              <path d="M6.5 15.2c1.8 1.4 3.6 2 5.5 2s3.7-.6 5.5-2"/>
-            </svg>
-          </div>
-          <p>Sobrancelhas</p>
-        </div>
-        <div class="category-item" data-categoria="massagem">
-          <div class="icon-circle" aria-hidden="true">
-            <img class="icone-massagem" src="img/icone-massagem.png" alt="">
-          </div>
-          <p>Massagem</p>
-        </div>
-        <div class="category-item ativo" data-categoria="todos">
-          <div class="icon-circle" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/>
-              <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/>
-              <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/>
-              <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/>
-            </svg>
-          </div>
-          <p>Todos</p>
-        </div>
-      </div>
-
-      <!-- CARDS DE SALÕES -->
-      <div class="content-cards">
-        <h2>Salões e Clínicas em Destaque</h2>
-        <div class="grid-cards" id="container-cards">
-          <!-- Os cards serão injetados dinamicamente via JavaScript -->
-        </div>
+        </article>
       </div>
     </section>
 
-    <!-- LADO DIREITO: MAPA -->
-    <section class="map-side">
-      <div id="map"></div>
+    <section class="faixa-prova">
+      <p>Feito para quem quer se cuidar sem complicar o dia.</p>
     </section>
 
+    <section class="bloco" id="para-voce">
+      <div class="bloco-cabeca">
+        <p class="selo selo-roxo">Para você</p>
+        <h2>Marque seu horário com leveza.</h2>
+        <p>O aplicativo mostra quem está por perto e deixa a agenda na sua mão. Você escolhe, confirma e segue o dia.</p>
+      </div>
+
+      <div class="grade-tres">
+        <article class="cartao">
+          <span class="icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 21s6-5.1 6-10a6 6 0 1 0-12 0c0 4.9 6 10 6 10z"/>
+              <circle cx="12" cy="11" r="2.1"/>
+            </svg>
+          </span>
+          <h3>No mapa, perto de você</h3>
+          <p>Veja salões e clínicas da região antes de sair de casa. O caminho começa no lugar certo.</p>
+        </article>
+        <article class="cartao">
+          <span class="icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="5" width="16" height="15" rx="2.5"/>
+              <path d="M8 3.5v3.2M16 3.5v3.2M4 10h16"/>
+            </svg>
+          </span>
+          <h3>Agenda em poucos cliques</h3>
+          <p>Serviço, dia e hora no mesmo fluxo. A marcação fica registrada, sem papel e sem “te confirmo já”.</p>
+        </article>
+        <article class="cartao">
+          <span class="icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 19.4c-4.6-2.7-7.2-5.6-7.2-8.7A3.7 3.7 0 0 1 12 8.2a3.7 3.7 0 0 1 7.2 2.5c0 3.1-2.6 6-7.2 8.7z"/>
+            </svg>
+          </span>
+          <h3>Todo o seu cuidado</h3>
+          <p>Cabelo, unhas, sobrancelha, depilação e massagem. Um só lugar para o que você quer fazer hoje.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="b2b" id="para-saloes">
+      <div class="b2b-grade">
+        <div class="b2b-texto">
+          <p class="selo selo-claro">Para salões, autônoma e clínicas</p>
+          <h2>Seu salão pode crescer ainda mais com o sistema Onde Tem.</h2>
+          <p>
+            Quem procura um horário em Saquarema já pode encontrar o seu espaço. O Onde Tem coloca o
+            estabelecimento no mapa, abre a agenda para clientes novos e organiza os horários que hoje se perdem
+            em recado.
+          </p>
+          <ul class="lista-b2b">
+            <li>
+              <strong>Mais gente da região te encontra.</strong>
+              Seu salão aparece para quem está por perto e já quer marcar.
+            </li>
+            <li>
+              <strong>A agenda trabalha com a casa cheia.</strong>
+              O cliente escolhe o horário sozinho, mesmo quando a equipe está atendendo.
+            </li>
+            <li>
+              <strong>Menos cadeira vazia.</strong>
+              Horário livre deixa de ficar escondido no celular e passa a ser visto por quem busca agora.
+            </li>
+            <li>
+              <strong>Tudo no mesmo sistema.</strong>
+              Serviços, confirmações e o contato do estabelecimento ficam organizados para a equipe.
+            </li>
+          </ul>
+        </div>
+
+        <form class="form-lead" id="form-salao">
+          <h3>Leve o Onde Tem para o seu salão</h3>
+          <p>Conte rapidinho quem é você. A gente abre o cadastro da empresa já com esses dados.</p>
+
+          <label for="salao-nome">Nome do salão</label>
+          <input id="salao-nome" name="fantasia" type="text" required maxlength="80"
+            placeholder="Ex.: Studio da Praia" autocomplete="organization">
+
+          <label for="salao-responsavel">Seu nome</label>
+          <input id="salao-responsavel" name="responsavel" type="text" required maxlength="80"
+            placeholder="Quem cuida do salão" autocomplete="name">
+
+          <label for="salao-email">E-mail comercial</label>
+          <input id="salao-email" name="email" type="email" required maxlength="120"
+            placeholder="contato@seusalao.com" autocomplete="email">
+
+          <button class="btn btn-roxo btn-grande" type="submit">Quero crescer com o Onde Tem</button>
+          <p class="form-nota">Na próxima tela você cria a senha e conclui o cadastro da empresa.</p>
+        </form>
+      </div>
+    </section>
+
+    <section class="bloco" id="como-funciona">
+      <div class="bloco-cabeca">
+        <p class="selo selo-roxo">Como funciona</p>
+        <h2>Três passos. Aí é só chegar no horário.</h2>
+      </div>
+
+      <ol class="passos">
+        <li>
+          <span>1</span>
+          <h3>Escolha o que você quer</h3>
+          <p>Cabelo, unhas, sobrancelha ou o cuidado do dia. O app filtra por serviço.</p>
+        </li>
+        <li>
+          <span>2</span>
+          <h3>Veja quem está perto</h3>
+          <p>O mapa e os cards mostram os estabelecimentos de Saquarema que fazem esse serviço.</p>
+        </li>
+        <li>
+          <span>3</span>
+          <h3>Confirme o horário</h3>
+          <p>Data e hora escolhidas por você. Sem fila de mensagem para marcar o básico.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="convite">
+      <div class="convite-caixa">
+        <h2>Seu próximo horário começa aqui.</h2>
+        <p>Abra o aplicativo e marque agora, ou crie sua conta para guardar seus agendamentos.</p>
+        <div class="hero-acoes">
+          <a class="btn btn-branco btn-grande" href="../index.html">Usar o aplicativo</a>
+          <a class="btn btn-contorno-claro btn-grande" href="../cadastro.html?tipo=cliente">Criar conta grátis</a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Seu Script Principal -->
-  <!-- 1. Gestão de PWA e Notificações -->
-  <script src="js/app.js"></script>
+  <footer class="rodape">
+    <div class="rodape-interno">
+    <div class="rodape-topo">
+      <a class="rodape-marca" href="#topo">
+        <img src="assets/img/LOGO_PNG_white.png" alt="Onde tem?">
+      </a>
+      <p class="rodape-frase">Agendamento de serviços estéticos em Saquarema, no mapa e em poucos cliques.</p>
+    </div>
 
-  <!-- 2. Lógica Principal, Mapa e Interface -->
-  <script src="js/index.js"></script>
+    <div class="rodape-grade">
+      <section>
+        <h2>O aplicativo</h2>
+        <p>Encontre salões, barbearias e clínicas perto de você. Escolha o serviço, veja quem está na região e confirme o horário sem fila de mensagem.</p>
+      </section>
+      <section>
+        <h2>Para você</h2>
+        <ul>
+          <li>Cabelo, unhas e sobrancelha</li>
+          <li>Depilação e massagem</li>
+          <li><a href="../index.html">Abrir o aplicativo</a></li>
+          <li><a href="../cadastro.html?tipo=cliente">Criar conta</a></li>
+        </ul>
+      </section>
+      <section>
+        <h2>Para o salão</h2>
+        <ul>
+          <li>Apareça no mapa da região</li>
+          <li>Agenda organizada para a equipe</li>
+          <li><a href="#para-saloes">Como o salão cresce</a></li>
+          <li><a href="../cadastro.html?tipo=empresa">Cadastrar empresa</a></li>
+        </ul>
+      </section>
+    </div>
 
-<!-- MODAL DE AGENDAMENTO -->
-<div id="modal-agendamento" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;">
-  <div class="modal-content" style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-    <h3 id="modal-titulo-salao" style="margin-bottom: 15px; color: #333;">Agendar Serviço</h3>
-    
-    <form id="form-agendamento" style="display: flex; flex-direction: column; gap: 12px;">
-      <label style="font-size: 14px; font-weight: 600;">Data desejada:</label>
-      <input type="date" id="data-agendamento" required style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-      
-      <label style="font-size: 14px; font-weight: 600;">Horário:</label>
-      <input type="time" id="hora-agendamento" required style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-      
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-        <button type="button" onclick="fecharModalAgendamento()" style="padding: 10px 15px; background: #ccc; border: none; border-radius: 6px; cursor: pointer;">Cancelar</button>
-        <button type="submit" style="padding: 10px 15px; background: #6c5ce7; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">Confirmar Agendamento</button>
-      </div>
-    </form>
-  </div>
-</div>
+    <hr class="rodape-linha">
 
+    <nav class="rodape-links" aria-label="Atalhos">
+      <a href="../index.html">Aplicativo</a>
+      <a href="../login.html">Entrar</a>
+      <a href="../cadastro.html">Cadastro</a>
+      <a href="#para-voce">Para você</a>
+      <a href="#para-saloes">Para salões</a>
+    </nav>
+    <p class="rodape-nota">Universidade de Vassouras · Campus Saquarema</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+  <script src="js/script.js"></script>
 </body>
 
 </html>
