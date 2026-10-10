@@ -1,9 +1,9 @@
 backend/app/__pycache__/
 backend/db.sqlite3
-.cursor/
 .DS_Store
 Thumbs.db
 .env
 .venv2/
 backend/app/email_templates/__pycache__/
 backend/app/saloes/__pycache__/
+.cursor/
