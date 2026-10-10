@@ -1,6 +1,6 @@
 const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://127.0.0.1:8000"
-    : "https://onde-tem-back-end.onrender.com";
+    : process.env.API_RENDER;
 
 // Variável para guardar o e-mail durante o fluxo de ativação
 let emailCadastroPendente = "";

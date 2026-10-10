@@ -2,7 +2,7 @@
 
 const API_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
     ? "http://127.0.0.1:8000"
-    : "https://onde-tem-back-end.onrender.com";
+    : process.env.API_RENDER;
 
 document.addEventListener("DOMContentLoaded", () => {
     const formLogin = document.getElementById("form-login");
