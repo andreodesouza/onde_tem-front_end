@@ -65,3 +65,4 @@ jobs:
           app-name: 'ondetem'
           slot-name: 'Production'
           package: '.'
+          startup-command: 'gunicorn -k uvicorn.workers.UvicornWorker main:app --bind=0.0.0.0 --timeout 600'
